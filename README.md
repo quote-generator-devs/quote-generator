@@ -6,7 +6,7 @@ them.
 In addition, we are hoping to integrate this as a social media service 
 in which users can react to their friends' quotes and post their own.
 ## Goals
--[] - Create separate branches for frontend and backend.
--[] - Determine what languages/frameworks we are using.
--[] - Assign duties.
+- [ ] - Create separate branches for frontend and backend.
+- [ ] - Determine what languages/frameworks we are using.
+- [ ] - Assign duties.
 
