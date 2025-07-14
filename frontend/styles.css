@@ -1,0 +1,108 @@
+body{
+    background-image:linear-gradient(to right,rgb(249, 198, 231),rgb(255, 242, 190));
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+
+.nav{
+    background-color: antiquewhite;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.navbar_items a{
+    float:left;
+    display:block;
+    color:rgb(130, 127, 127);
+    text-align:center;
+    padding: 12px 12px;
+    text-decoration: none;
+    font-family: "Copperplate", "Fantasy";
+    font-size:20px;
+}
+
+.navbar_items a:hover{
+    background-color:cornsilk;
+    border-radius:5px;
+}
+
+.main_header{
+    display:flex;
+    flex-direction: row;
+}
+
+.quotebook_box{
+    width: 800px;
+    display:flex;
+    flex-direction:column;
+    gap: 5px;
+}
+
+.quotebox_text{
+    gap:5px;
+    font-family: "Copperplate", "Fantasy";
+    text-align: left;
+}
+.quotebook_title{
+    color: rgb(140, 140, 140);
+    font-size: 50px;
+    margin-bottom:0px;
+}
+
+.subtitles{
+    color: rgb(130, 127, 127);
+    margin-top:0px
+}
+
+.homeBtns{
+    margin: 15px;
+}
+
+.loginBtn, .signUpBtn{
+    padding: 12px 12px;
+    margin: 5px;
+    font-size: 20px;
+    background-color:cornsilk;
+    border:none;
+    border-radius: 30px;
+    color:silver;
+}
+
+.loginBtn:hover{
+    background-color:rgb(255, 220, 243);
+}
+
+.signUpBtn:hover{
+    background-color:rgb(255, 220, 243);
+}
+
+.searchbar{
+  margin-top: 130px;
+  margin-right: 90px;
+  width: 100%;
+  max-width: 800px;
+  padding-right: 20px;
+  
+}
+
+
+.searchbar input[type="text"] {
+ text-align:left;
+ padding: 10px 50px;
+ border-radius: 5px;
+ border:none;
+ font-size: 14px;
+ width: 100%;
+ 
+}
+
+
+
+
+
+
+
+
