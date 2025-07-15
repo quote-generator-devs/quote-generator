@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import {HashRouter, Routes, Route, NavLink} from "react-router-dom"; // used for navigation between pages
+import React, {useState, useEffect} from 'react';
+import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
+import { searchQuotes } from './utils';
 
 function App() {
   return (
@@ -8,6 +10,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" exact element={<Home />} />
+        <Route path="/search" element={<QuotesFound />} />
         <Route path="/about-us" exact element={<AboutUs />} />
         <Route path="/login" exact element={<Login />} />
         <Route path="/signup" exact element={<SignUp />} />
@@ -33,6 +36,16 @@ function NavBar() {
 }
 
 function Home() {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+
+    // Navigate to the results page with the query as a URL parameter
+    navigate(`/search?query=${query}`);
+  };
+
   return (
     <div class="main_header">
       <div class="quotebook_box">
@@ -48,8 +61,13 @@ function Home() {
       </div>
 
       <div class="searchbar">
-        <input type="text" placeholder="🔍 Input your mood here for a quote!" />
-        <button className="submitBtn">Submit</button>
+        <form onSubmit={handleSearch}>
+          <input type="text" value={query} 
+            placeholder="🔍 Input your mood here for a quote!" 
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button type="submit" className="submitBtn">Search</button>
+        </form>
       </div>
     </div>
   );
@@ -136,5 +154,60 @@ function AboutUs() {
     </div>
   );
 }
+
+function QuotesFound() {
+  const [quotes, setQuotes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Hook to read URL query parameters
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
+
+  // useEffect runs when the component mounts or when the 'query' changes
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const results = await searchQuotes(query);
+        if (results.length === 0) {
+          setError("No quotes found for that term. Try another!");
+        } else {
+          setQuotes(results);
+        }
+      } catch (err) {
+        setError("Could not fetch quotes. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [query]); // The effect re-runs if the 'query' in the URL changes
+
+  return (
+    <div className="results-page">
+      {!query.trim() && <h1>Random Quotes</h1>}
+      {query.trim() && <h1>Results for "{query}"</h1>}
+
+      <div className="results-content">
+        {isLoading && <p>Loading quotes...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {quotes.length > 0 && (
+          <ul>
+            {quotes.map((quote) => (
+              <li key={quote._id}>
+                <blockquote>"{quote.content}"</blockquote>
+                <cite>- {quote.author}</cite>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 export default App;

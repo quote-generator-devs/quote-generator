@@ -149,6 +149,30 @@ input {
 }
 
 
+/* Quote Search Results Styling */
+.results-page {
+    position: relative;
+    top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.results-page > h1 {
+    font-size: 3rem;
+}
+
+.results-content > p {
+    font-family: "Garamond", "sans-serif";
+    font-size: 1.5rem;
+}
+
+.results-content > .error-message {
+    color: maroon;
+}
+
+
+
 /* About Us Styling */
 
 .dev_team {
@@ -158,7 +182,6 @@ input {
     align-items: center;
     margin-bottom: 8rem;
     padding-top: 30px;
-
 }
 
 .dev_team>h1 {
@@ -166,7 +189,6 @@ input {
     font-weight: bold;
     font-family: "Copperplate", "Fantasy";
     font-size: 4rem;
-
 }
 
 .devs {
@@ -175,7 +197,6 @@ input {
     align-items: center;
     position:relative;
     flex-direction: row;
-
 }
 
 .dev {
