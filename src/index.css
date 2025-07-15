@@ -6,7 +6,7 @@ body{
     min-height: 100vh;
 }
 
-/* Navigation Bar Styling */
+
 .nav{
     background-color: antiquewhite;
     overflow: hidden;
@@ -20,7 +20,7 @@ body{
     text-align:center;
     padding: 12px 12px;
     text-decoration: none;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     font-size:20px;
 }
 
@@ -29,7 +29,6 @@ body{
     border-radius:5px;
 }
 
-/* Home Page Styling */
 .main_header{
     display:flex;
     flex-direction: row;
@@ -42,13 +41,13 @@ body{
     gap: 5px;
 }
 
-.quotebox_text{
+.quotebox_text, .login_header{
     gap:5px;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     text-align: left;
 }
-.quotebook_title{
-    color: rgb(140, 140, 140);
+.quotebook_title, .login_header, .signup_header{
+    color: grey;
     font-size: 50px;
     margin-bottom:0px;
 }
@@ -89,7 +88,6 @@ body{
   
 }
 
-
 .searchbar input[type="text"] {
  text-align:left;
  padding: 10px 50px;
@@ -97,8 +95,33 @@ body{
  border:none;
  font-size: 14px;
  width: 100%;
- 
 }
+
+/* Login and Sign Up Styling */
+
+.container, .login_header, .signup_header{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login_form, .signup_form{
+    border-style: solid;
+    border-width: 3px;
+    border-color: snow;
+    background-color: cornsilk;
+    padding: 25px;
+    text-align: center;
+}
+
+.login_form > h3, .login_form > p, .signup_form > h3{
+    color: grey;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
 
 /* About Us Styling */
 

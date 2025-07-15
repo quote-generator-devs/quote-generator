@@ -9,6 +9,8 @@ function App() {
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/about-us" exact element={<AboutUs />} />
+        <Route path="/login" exact element={<Login />} />
+        <Route path="/signup" exact element={<SignUp />} />
       </Routes>
     </HashRouter>
   )
@@ -39,16 +41,59 @@ function Home() {
           <p class="subtitles">your mood. your quote.</p>
         </div>
 
-
         <div class="homeBtns">
-          <button class="loginBtn">Login</button>
-          <button class="signUpBtn">Sign Up</button>
+          <NavLink className="loginBtn" to="/login">Login</NavLink>
+          <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
         </div>
-
       </div>
 
       <div class="searchbar">
         <input type="text" placeholder="🔍 Input your mood here for a quote!" />
+      </div>
+    </div>
+  );
+}
+
+function Login() {
+  return (
+    <div> 
+      <div class = "login_header">
+        <h2>Quotebook</h2>
+      </div>
+      <div class = "container">
+        <form class="login_form">
+          <h3>Login</h3>
+          <label for="username"></label>
+          <input type = "text" id = "username" name = "Username" placeholder = "Your Username" />
+          <br />
+          <label for = "password"> </label>
+          <input type = "password" id = "password" name="Password" placeholder = "Your Password" />
+          <p><b>Don't have an account? </b></p>
+          <NavLink to = "/signup"> Sign Up</NavLink>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function SignUp(){
+  return (
+    <div>
+      <div class = "signup_header">
+        <h2>Quotebook</h2>
+      </div>
+      <div class = "container">
+        <form class = "login_form">
+          <h3>Sign Up</h3>
+          <label for = "email"></label>
+          <input type = "text" id = "email" name = "Email" placeholder = "Your Email" /> <br />
+          <label for = "password"></label>
+          <input type = "text" id = "password" name = "Password" placeholder = "Create Password" /> <br />
+          <label for = "reenter"></label>
+          <input type = "text" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" />
+          <p><b>Already Have an Account?</b></p>
+          <NavLink to = "/login"> Login </NavLink>
+        </form>
       </div>
     </div>
   );
