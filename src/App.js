@@ -49,6 +49,7 @@ function Home() {
 
       <div class="searchbar">
         <input type="text" placeholder="🔍 Input your mood here for a quote!" />
+        <button className="submitBtn">Submit</button>
       </div>
     </div>
   );
@@ -106,23 +107,23 @@ function AboutUs() {
         <h1>The Creators</h1>
         <div class="devs">
           <div class="dev">
-            <img src="https://placehold.co/400" alt="Image of Bhavana Dakshinamoorthy" />
+            <img src="https://placehold.co/200" alt="Image of Bhavana Dakshinamoorthy" class="bhavana"/>
             <p>Bhavana Dakshinamoorthy</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/400" alt="Image of Noor Diab" />
+            <img src="https://placehold.co/200" alt="Image of Noor Diab" class="noor" />
             <p>Noor Diab</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/400" alt="Image of Daniel Lawler" />
+            <img src="https://placehold.co/200" alt="Image of Daniel Lawler"  class="danny"/>
             <p>Daniel Lawler</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/400" alt="Image of Kaden Spencer" />
+            <img src="https://placehold.co/200" alt="Image of Kaden Spencer" class="kaden"/>
             <p>Kaden Spencer</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/400" alt="Image of Shane Thoma" />
+            <img src="https://placehold.co/200" alt="Image of Shane Thoma"  class="shane"/>
             <p>Shane Thoma</p>
           </div>
         </div>
