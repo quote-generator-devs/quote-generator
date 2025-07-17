@@ -15,6 +15,8 @@ function App() {
         <Route path="/login" exact element={<Login />} />
         <Route path="/signup" exact element={<SignUp />} />
         <Route path = "/profile" exact element = {<Profile />} />
+        <Route path = "/activity" exact element = {<Activity />} />
+        <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
       </Routes>
     </HashRouter>
   )
@@ -232,5 +234,35 @@ function QuotesFound() {
   );
 }
 
+function Activity() {
+  return (
+    <div class = "activity-container">
+      <div class = "activity-header">
+        <h1>Activity</h1>
+      </div>
+      <div class = "friend-requests">
+        <button>Friend Requests -{'>'} </button>
+      </div>
+      <div class = "your-activity">
+        <p> <b> Likes </b> </p>
+        <p><b>Comments</b></p>
+        <p><b>Followers</b> </p>
+      </div>
+    </div>
+  );
+}
+
+function SavedQuotes(){
+  return (
+    <div class = "saved-quotes-container">
+      <div class = "saved-quotes-header">
+        <h1>Saved Quotes</h1>
+      </div>
+      <div class = "saved-quotes-body">
+        <button> Collections -{'>'} </button>
+      </div>
+    </div>
+  );
+}
 
 export default App;
