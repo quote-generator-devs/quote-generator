@@ -14,6 +14,7 @@ function App() {
         <Route path="/about-us" exact element={<AboutUs />} />
         <Route path="/login" exact element={<Login />} />
         <Route path="/signup" exact element={<SignUp />} />
+        <Route path = "/profile" exact element = {<Profile />} />
       </Routes>
     </HashRouter>
   )
@@ -150,6 +151,28 @@ function AboutUs() {
       <div class="dev_description">
         <h2>About Us</h2>
         <p>Sharing quotes and quoting each other has been an amusing and exciting part of our college experience. We created Quotebook to continue our tradition and to share this small, but meaningful part of our lives with the world.</p>
+      </div>
+    </div>
+  );
+}
+
+function Profile(){
+  return (
+    <div class = "profile">
+      <h1> Profile </h1>
+      <div class = "profile-container">
+        <img src = "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=" alt = "Profile picture" class = "profile-pic"></img>
+      </div>
+      <div class = "info">
+        <div class = "username-follow">
+          <p class = "profile-element"> @username </p>
+          <span class = "separator">|</span>
+          <button class = "follow-button">Follow</button>
+        </div>
+        <p class = "profile-element"><b>Name</b></p>
+        <p class = "profile-element">Bio</p>
+        <p class = "profile-element"># of Friends</p>
+        <p class = "profile-element">Published Quotes</p>
       </div>
     </div>
   );

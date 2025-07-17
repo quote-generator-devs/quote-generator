@@ -237,6 +237,50 @@ input {
 
 }
 
+/* Profile Styling */
+
+.profile{
+    text-align: center;
+    font-family: "Garamond", "sans-serif";
+    font-size: 17px;
+    color:grey;
+}
+
+.profile-pic{
+    border-radius: 50%;
+    width:13%;
+    height:auto;
+}
+
+.profile-container{
+    display: flex;
+    justify-content: center;
+}
+
+.profile > h2{
+    color:grey;
+    font-family: "Garamond", "sans-serif";
+    font-size: 2rem;
+}
+
+.username-follow{
+    display: flex;
+    align-items: center;
+    gap : 10px;
+    justify-content: center;
+
+}
+
+.username-follow > p{
+    font-size: 105%
+}
+
+.follow-button{
+    background-color: pink;
+    border-radius: 10;
+    border-color: rgb(235, 195, 227);
+}
+
 
 @media only screen and (min-width: 992px) {
     body { 
