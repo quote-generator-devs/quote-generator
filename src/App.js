@@ -90,6 +90,8 @@ function Login() {
           <br />
           <label for = "password"> </label>
           <input type = "password" id = "password" name="Password" placeholder = "Your Password" />
+          <br />
+          <button class = "login-button">Login</button>
           <p><b>Don't have an account? </b></p>
           <NavLink to = "/signup"> Sign Up</NavLink>
         </form>
@@ -114,7 +116,8 @@ function SignUp(){
           <label for = "password"></label>
           <input type = "text" id = "password" name = "Password" placeholder = "Create Password" /> <br />
           <label for = "reenter"></label>
-          <input type = "text" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" />
+          <input type = "text" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" /> <br />
+          <button class = "signup-button">Sign Up</button>
           <p><b>Already Have an Account?</b></p>
           <NavLink to = "/login"> Login </NavLink>
         </form>
