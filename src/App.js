@@ -17,6 +17,11 @@ function App() {
         <Route path = "/profile" exact element = {<Profile />} />
         <Route path = "/activity" exact element = {<Activity />} />
         <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
+        <Route path = "/feed" exact element = {<Feed />} />
+        <Route path = "/theme1" exact element = {<Theme1 />} />
+        <Route path = "/theme2" exact element = {<Theme2 />} />
+        <Route path = "/theme3" exact element = {<Theme3 />} />
+        <Route path = "/theme4" exact element = {<Theme4 />} />
       </Routes>
     </HashRouter>
   )
@@ -27,12 +32,12 @@ function NavBar() {
   return (
     <div class="nav">
       <div class="navbar_items">
-      <NavLink class="home" to="/">Home</NavLink>
-      <NavLink class="feed" to="/feed">Feed</NavLink>
+      <NavLink class="home" to="/">Home </NavLink>
+      <NavLink class="feed" to="/feed">Feed </NavLink>
       <NavLink class="activity" to="/activity">Activity</NavLink>
       <NavLink class="saved_quotes" to="/saved-quotes">Saved Quotes</NavLink>
-      <NavLink class="profile" to="/profile">Profile</NavLink>
       <NavLink class="about_us" to="/about-us">About Us</NavLink>
+      <NavLink class="profile" to="/profile">Profile</NavLink>
       </div>
     </div>
   );
@@ -270,4 +275,66 @@ function SavedQuotes(){
   );
 }
 
+function Feed(){
+  return(
+    <div class="feed-container">
+      <div class="theme-container">
+          <div class="theme-header">
+            <h1 class="theme-heading">More Ideas By Theme...</h1>
+          </div>
+        <div class="themeBtns">
+          <NavLink className="theme1" to="/theme1">Daily Dose of Inspiration</NavLink>
+          <NavLink className="theme2" to="/theme2">Morning Motivation</NavLink>
+          <NavLink className="theme3" to="/theme3">Creative Sparks</NavLink>
+          <NavLink className="theme4" to="/theme4">Life Lessons</NavLink>
+        </div>
+      </div>
+
+      <div class="post-container">
+        <div class="post-box">
+          <p class="user-title"> 👤 Reaser_The_Best_Professor_Ever</p>
+          <div class="quote">
+          Quote will be Posted Here...
+          </div>
+          <div class="postBtns">
+            <button class="likeBtn">👍</button>
+            <button class="saveBtn">⛉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Theme1(){
+  return(
+    <div class="theme1-container">
+
+    </div>
+  );
+}
+
+function Theme2(){
+  return(
+    <div class="theme2-container">
+
+    </div>
+  );
+}
+
+function Theme3(){
+  return(
+    <div class="theme3-container">
+
+    </div>
+  );
+}
+
+function Theme4(){
+  return(
+    <div class="theme4-container">
+
+    </div>
+  );
+}
 export default App;

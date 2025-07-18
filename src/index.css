@@ -295,6 +295,137 @@ input {
     border-color: rgb(235, 195, 227);
 }
 
+/* Feed Styling */
+
+.feed-container{
+    display: flex;
+    background-color:transparent;
+
+}
+.theme-container{
+    display:flex;
+    flex-direction:column;
+    padding: 15px;
+    text-align: left;
+}
+
+.theme-header{
+    text-align:left;
+    font-family: "Garamond", "sans-serif";
+    font-size: 15px;
+    color:grey
+}
+
+.themeBtns{
+    display:flex;
+    padding: 10px;
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+}
+
+.theme1{
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font-family: "Garamond", "sans-serif";
+    font-size: 25px;
+    width: 400px;
+    background-color: rgb(181, 251, 255);
+    color:white;
+    border-radius: 30px;
+}
+
+
+.theme2{
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font-family: "Garamond", "sans-serif";
+    width: 400px;
+    font-size: 25px;
+    background-color: rgb(181, 255, 197);
+    color:white;
+    border-radius: 30px;
+}
+
+
+.theme3{
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font-family: "Garamond", "sans-serif";
+    width: 400px;
+    font-size: 25px;
+    background-color: rgb(248, 181, 255);
+    color:white;
+    border-radius: 30px;
+}
+
+
+.theme4{
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font-family: "Garamond", "sans-serif";
+    width: 400px;
+    font-size: 25px;
+    background-color: rgb(255, 214, 181);
+    color:white;
+    border-radius: 30px;
+}
+
+.post-container{
+    padding-left:80px;
+    padding-top: 30px;
+}
+
+.post-box{
+    background-color: white;
+    width: 600px;
+    height: 300px;
+    border-radius: 10px;
+}
+
+.user-title{
+    font-family: "Garamond", "sans-serif";
+    color:grey;
+    font-size: 15px;
+    text-align:left;
+    padding-top:10px;
+    padding-left:10px;
+}
+
+.quote{
+    background-color:rgb(210, 210, 255);
+    text-align: center;
+    font-size: 20px;
+    width: 580px;
+    height: 230px;
+    margin: 10px;
+    border-radius:20px;
+}
+
+.postBtns{
+    display: flex;
+    padding: 10px;
+    margin-top: -20px; 
+
+}
+
+.likeBtn, .saveBtn{
+    background-color: transparent;
+    margin: 5px;
+    background-color: transparent;
+    border:none;
+}
+
+.likeBtn, .saveBtn:hover{
+    cursor:pointer;
+}
+
+
+
 
 @media only screen and (min-width: 992px) {
     body { 
