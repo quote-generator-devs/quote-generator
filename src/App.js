@@ -78,7 +78,7 @@ function Home() {
 
 function Login() {
   return (
-    <div> 
+    <div class = "login_page"> 
       <div class = "login_header">
         <h2>Quotebook</h2>
       </div>
@@ -105,10 +105,12 @@ function SignUp(){
         <h2>Quotebook</h2>
       </div>
       <div class = "container">
-        <form class = "login_form">
+        <form class = "signup_form">
           <h3>Sign Up</h3>
           <label for = "email"></label>
           <input type = "text" id = "email" name = "Email" placeholder = "Your Email" /> <br />
+          <label for = "username"></label>
+          <input type = "text" id = "username" name = "Username" placeholder = "Create Username" /> <br />
           <label for = "password"></label>
           <input type = "text" id = "password" name = "Password" placeholder = "Create Password" /> <br />
           <label for = "reenter"></label>

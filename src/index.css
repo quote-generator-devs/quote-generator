@@ -4,6 +4,7 @@ body{
     background-size: cover;
     background-position: center;
     min-height: 100vh;
+    overflow:hidden;
 }
 
 
@@ -127,7 +128,10 @@ body{
 .container, .login_header, .signup_header{
     display: flex;
     justify-content:center;
-    align-items:center;
+}
+
+.login_header, .signup_header{
+    font-size:55px;
 }
 
 .login_form, .signup_form{
@@ -137,14 +141,17 @@ body{
     background-color: cornsilk;
     padding: 25px;
     text-align: center;
+    width: 300px;
 }
 
-.login_form > h3, .login_form > p, .signup_form > h3{
+.login_form > h3, .signup_form > h3{
     color: grey;
 }
 
 input {
     margin-bottom: 10px;
+    padding: 10px;
+    width: 60%;
 }
 
 
