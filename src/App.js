@@ -213,6 +213,7 @@ function QuotesFound() {
         }
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -232,9 +233,9 @@ function QuotesFound() {
         {quotes.length > 0 && (
           <ul>
             {quotes.map((quote) => (
-              <li key={quote._id}>
+              <li key={quote.id}>
                 <blockquote>"{quote.content}"</blockquote>
-                <cite>- {quote.author}</cite>
+                <cite>- {quote.author.name}</cite>
               </li>
             ))}
           </ul>
