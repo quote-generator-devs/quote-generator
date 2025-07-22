@@ -23,7 +23,7 @@ def initialize_db():
 
     #create a table
     connect.execute('''CREATE TABLE USER
-                (ID INT PRIMARY KEY AUTOINCREMENT,
+                (ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 USERNAME TEXT NOT NULL,
                 PASSWORD TEXT NOT NULL);
     ''')
