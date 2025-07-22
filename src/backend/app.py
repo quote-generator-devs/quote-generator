@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app= Flask(__name__)
 
-id=0
+
 
 ###DATABASE SECTION###:
     #to create: 
@@ -17,33 +17,39 @@ id=0
 
     #create user data base    
 
-connect= sqlite3.connect('user.db')
-connect.execute("DROP TABLE IF EXISTS USER")
+def initialize_db():
+    connect= sqlite3.connect('user.db')
+    connect.execute("DROP TABLE IF EXISTS USER")
 
     #create a table
-connect.execute('''CREATE TABLE USER
-                (ID INT PRIMARY KEY NOT NULL
-                USERNAME TEXT NOT NULL
+    connect.execute('''CREATE TABLE USER
+                (ID INT PRIMARY KEY AUTOINCREMENT,
+                USERNAME TEXT NOT NULL,
                 PASSWORD TEXT NOT NULL);
     ''')
 
-
-
+    connect.close()
 
 
 @app.route("/user/db", methods=["POST"])
-
 def receive_data():
     if request.is_json: 
         data=request.json
         username= data.get('username')
         password= data.get('password')
-        id= id+1
-
-    connect.execute("INSERT INTO USER (ID, USERNAME, PASSWORD) VALUES (id, username, password)")
-
+       
+    connect=sqlite3.connect('user.db')
+    connect.execute("INSERT INTO USER (USERNAME, PASSWORD) VALUES (?,?)", (username, password))
+    connect.commit()
+    connect.close()
     
-connect.close()
+
+
+if __name__ == "__main__":
+    initialize_db()
+
+    #makes sure flask runs in the background
+    app.run(debug=True)
 
 #figure out how to put the values in the table...
 
