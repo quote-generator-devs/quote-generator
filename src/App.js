@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
-import { searchQuotes } from './utils';
+import { searchQuotes, addUser } from './utils';
 
 function App() {
   return (
@@ -106,22 +106,40 @@ function Login() {
 }
 
 function SignUp(){
+  function handleSubmit(e) {
+    // Prevent the browser from reloading the page
+    e.preventDefault();
+
+    // Read the form data
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // You can pass formData as a fetch body directly:
+    // addUser(formData); // plaintext(?) format (seems less useful)
+    // console.log(formData);
+
+    // Or you can work with it as a plain object:
+    const formJson = Object.fromEntries(formData.entries());
+    console.log(formJson); // JSON formatted (seems more useful)
+    addUser(formJson);
+  }
+
   return (
     <div>
       <div class = "signup_header">
         <h2>Quotebook</h2>
       </div>
       <div class = "container">
-        <form class = "signup_form">
+        <form class = "signup_form" method="post" onSubmit={handleSubmit}>
           <h3>Sign Up</h3>
           <label for = "email"></label>
           <input type = "text" id = "email" name = "Email" placeholder = "Your Email" /> <br />
           <label for = "username"></label>
           <input type = "text" id = "username" name = "Username" placeholder = "Create Username" /> <br />
           <label for = "password"></label>
-          <input type = "text" id = "password" name = "Password" placeholder = "Create Password" /> <br />
+          <input type = "password" id = "password" name = "Password" placeholder = "Create Password" /> <br />
           <label for = "reenter"></label>
-          <input type = "text" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" /> <br />
+          <input type = "password" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" /> <br />
           <button class = "signup-button">Sign Up</button>
           <p><b>Already Have an Account?</b></p>
           <NavLink to = "/login"> Login </NavLink>

@@ -27,3 +27,19 @@ export async function searchQuotes(query) {
         throw new Error("Could not fetch quotes. Please try again later.");
     }
 }
+
+export async function addUser(data) {
+    // const result = "successful test!!!";
+
+    const response = await fetch('http://localhost:5000/user/db', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    console.log(result);
+
+    // console.log(data.Username + " " + data.Email + " " + data.Password);
+}
