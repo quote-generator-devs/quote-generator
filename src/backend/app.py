@@ -63,24 +63,25 @@ def receive_data():
 
     return json.loads('{"success": true}')
     
-@app.route('/user/validate', methods=['POST', 'OPTIONS'])
+@app.route('/user/validate', methods=['POST'])
 
 def login():
     """Receives login credentials and verifies them against the stored hash."""
-    username = request.json['Username']
-    password = request.json['Password']
+    data = request.get_json()
+    username = data['Username']
+    password = data['Password']
 
     conn = get_db_connection()
     user_row = conn.execute('SELECT * FROM user WHERE username = ?', (username,)).fetchone()
     conn.close()
 
     # Check if user exists and if the submitted password matches the stored hash
-    if user_row and bcrypt.check_password_hash(user_row['password_hash'], password):
+    if user_row and bcrypt.check_password_hash(user_row['password'], password):
         # login handling
-        return json.loads({'message': 'Login successful!'})
+        return json.loads('{"message": "Login successful!"}')
     else:
         # AUTHENTICATION FAILED
-        return json.loads({'error': 'Invalid username or password'}), 401 # Unauthorized
+        return json.loads('{"error": "Invalid username or password"}'), 401 # Unauthorized
 
 if __name__ == "__main__":
     #initialize_db() --> we can initialize manually since we only have to do this once
