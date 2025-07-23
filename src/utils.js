@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+
 /**
  * Searches for quotes using the Quotable API.
  * @param {string} query - The term to search for (e.g., 'wisdom', 'technology').
@@ -29,17 +31,32 @@ export async function searchQuotes(query) {
 }
 
 export async function addUser(data) {
-    // const result = "successful test!!!";
+    const saltRounds = 10;
 
-    const response = await fetch('http://localhost:5000/user/db', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
-    const result = await response.json();
-    console.log(result);
+    try {
+        const hashedPassword = await bcrypt.hash(data.Password, saltRounds);
+        const secureData = {
+            ...data, // copy exisiting data
+            Password: hashedPassword //overwrites the plaintext password
+        };
 
-    // console.log(data.Username + " " + data.Email + " " + data.Password);
+        const response = await fetch('http://localhost:5000/user/db', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(secureData)
+        });
+
+        if (!response.ok) {
+            const errorResult = await response.json();
+            throw new Error(errorResult.error || `Server responded with status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result);
+    }
+    catch(err) {
+        console.error("Failed to add user:", err);
+    }
 }
