@@ -4,9 +4,12 @@
 #imports
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
+from flask_cors import CORS
+import json
 
 
 app= Flask(__name__)
+CORS(app, origins='http://localhost:3000')
 
 
 
@@ -23,7 +26,7 @@ def initialize_db():
 
     #create a table
     connect.execute('''CREATE TABLE USER
-                (ID INT PRIMARY KEY AUTOINCREMENT,
+                (ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 USERNAME TEXT NOT NULL,
                 PASSWORD TEXT NOT NULL);
     ''')
@@ -35,13 +38,15 @@ def initialize_db():
 def receive_data():
     if request.is_json: 
         data=request.json
-        username= data.get('username')
-        password= data.get('password')
+        username= data['Username']
+        password= data['Password']
        
     connect=sqlite3.connect('user.db')
     connect.execute("INSERT INTO USER (USERNAME, PASSWORD) VALUES (?,?)", (username, password))
     connect.commit()
     connect.close()
+
+    return json.loads('{"success": true}')
     
 
 
