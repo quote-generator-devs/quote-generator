@@ -50,14 +50,19 @@ export async function addUser(data) {
 
         if (!response.ok) {
             const errorResult = await response.json();
+            if(response.status === 409){
+                return {success: false, error: "Username already taken"};
+            }
             throw new Error(errorResult.error || `Server responded with status: ${response.status}`);
         }
 
         const result = await response.json();
+        return {success: true, result};
         console.log(result);
     }
     catch(err) {
         console.error("Failed to add user:", err);
+        return {success: false, error: err.message};
     }
 }
 

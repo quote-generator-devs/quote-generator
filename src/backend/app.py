@@ -37,7 +37,7 @@ def initialize_db():
     #create a table IF IT DOESN'T EXIST
     connect.execute('''CREATE TABLE IF NOT EXISTS USER
                 (ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                USERNAME TEXT NOT NULL,
+                USERNAME TEXT NOT NULL UNIQUE,
                 PASSWORD TEXT NOT NULL);
     ''')
 
@@ -55,6 +55,11 @@ def receive_data():
        
 
         connect=sqlite3.connect('user.db')
+        existingUser = connect.execute("SELECT * FROM USER WHERE USERNAME = ?", (username,)).fetchone()
+        if existingUser:
+            connect.close()
+            return{"error": "Username Already Taken"}, 409
+        
         connect.execute("INSERT INTO USER (USERNAME, PASSWORD) VALUES (?,?)", (username, password))
         connect.commit()
         connect.close()

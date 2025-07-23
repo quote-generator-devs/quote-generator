@@ -127,9 +127,14 @@ function Login() {
 }
 
 function SignUp(){
-  function handleSubmit(e) {
+  const [error,setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  async function handleSubmit(e) {
     // Prevent the browser from reloading the page
     e.preventDefault();
+    setError(null);
+    setSuccess(false);
 
     // Read the form data
     const form = e.target;
@@ -141,8 +146,17 @@ function SignUp(){
 
     // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
+    const response = await addUser(formJson);
+
+    if(response.success){
+      setSuccess(true);
+      setError(null);
+      form.reset();
+    } else{
+      setSuccess(false);
+      setError(response.error);
+    }
     console.log(formJson); // JSON formatted (seems more useful)
-    addUser(formJson);
   }
 
   return (
@@ -162,6 +176,8 @@ function SignUp(){
           <label for = "reenter"></label>
           <input type = "password" id = "reenter" name = "Re-enter" placeholder = "Re-enter Password" /> <br />
           <button class = "signup-button">Sign Up</button>
+          {error && <p class = "signup-error">{error}</p>}
+          {success && <p class = "signup-success">Registration successful!</p>}
           <p><b>Already Have an Account?</b></p>
           <NavLink to = "/login"> Login </NavLink>
         </form>
