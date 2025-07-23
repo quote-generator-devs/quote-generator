@@ -105,7 +105,7 @@ function Login() {
 
       if(result === "login")
       {
-        navigate(`/login`);
+        navigate(`/profile`);
       }
       else
       {
