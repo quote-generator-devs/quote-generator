@@ -86,7 +86,7 @@ function Home() {
 function Login() {
 
     const navigate = useNavigate();
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       // Prevent the browser from reloading the page
       e.preventDefault();
 
@@ -101,15 +101,15 @@ function Login() {
       // Or you can work with it as a plain object:
       const formJson = Object.fromEntries(formData.entries());
       console.log(formJson); // JSON formatted (seems more useful)
-      const result = validateUser(formJson);
+      const result = await validateUser(formJson);
 
       if(result === "login")
       {
-        navigate(`/login?query=login`);
+        navigate(`/login`);
       }
       else
       {
-        navigate(`/signup?query=signup`);
+        navigate(`/signup`);
       }
 
     }
