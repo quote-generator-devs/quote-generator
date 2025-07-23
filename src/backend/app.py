@@ -4,12 +4,12 @@
 #imports
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import json
 
 
 app= Flask(__name__)
-CORS(app, origins='http://localhost:3000')
+CORS(app, origins=['http://localhost:3000'])
 
 
 
@@ -19,10 +19,10 @@ CORS(app, origins='http://localhost:3000')
             #quotes saved db (create later??)
 
     #create user data base    
-
 def initialize_db():
     connect= sqlite3.connect('user.db')
     connect.execute("DROP TABLE IF EXISTS USER")
+
 
     #create a table
     connect.execute('''CREATE TABLE USER
@@ -34,8 +34,11 @@ def initialize_db():
     connect.close()
 
 
-@app.route("/user/db", methods=["POST"])
+@app.route("/user/db", methods=['POST', 'OPTIONS'])
+
 def receive_data():
+    
+
     if request.is_json: 
         data=request.json
         username= data['Username']
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     #makes sure flask runs in the background
     app.run(debug=True)
 
-#figure out how to put the values in the table...
+
 
 
 
