@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
-import { searchQuotes, addUser } from './utils';
+import { searchQuotes, addUser, validateUser } from './utils';
 
 function App() {
   return (
@@ -86,22 +86,22 @@ function Home() {
 function Login() {
 
     function handleSubmit(e) {
-    // Prevent the browser from reloading the page
-    e.preventDefault();
+      // Prevent the browser from reloading the page
+      e.preventDefault();
 
-    // Read the form data
-    const form = e.target;
-    const formData = new FormData(form);
+      // Read the form data
+      const form = e.target;
+      const formData = new FormData(form);
 
-    // You can pass formData as a fetch body directly:
-    // addUser(formData); // plaintext(?) format (seems less useful)
-    // console.log(formData);
+      // You can pass formData as a fetch body directly:
+      // addUser(formData); // plaintext(?) format (seems less useful)
+      // console.log(formData);
 
-    // Or you can work with it as a plain object:
-    const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson); // JSON formatted (seems more useful)
-    validateUser(formJson);
-  }
+      // Or you can work with it as a plain object:
+      const formJson = Object.fromEntries(formData.entries());
+      console.log(formJson); // JSON formatted (seems more useful)
+      validateUser(formJson);
+    }
 
   return (
     <div class = "login_page"> 
@@ -109,7 +109,7 @@ function Login() {
         <h2>Quotebook</h2>
       </div>
       <div class = "container">
-        <form class="login_form">
+        <form class="login_form" method="post" onSubmit={handleSubmit}>
           <h3>Login</h3>
           <label for="username"></label>
           <input type = "text" id = "username" name = "Username" placeholder = "Your Username" />

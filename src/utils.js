@@ -60,3 +60,17 @@ export async function addUser(data) {
         console.error("Failed to add user:", err);
     }
 }
+
+export async function validateUser(data) {
+    const response = await fetch('http://localhost:5001/user/validate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+    });
+
+    const result = await response.json();
+    console.log(result);
+}

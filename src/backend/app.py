@@ -5,17 +5,27 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
 from flask_cors import CORS, cross_origin
+from flask_bcrypt import Bcrypt
 import json
+import sqlite3
 
 
 app= Flask(__name__)
-CORS(app, origins=['http://localhost:3000'])
+CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+bcrypt = Bcrypt(app)
 
 
 ###DATABASE SECTION###:
     #to create: 
             # user db
             #quotes saved db (create later??)
+
+def get_db_connection():
+    """Establishes a connection to the database."""
+    conn = sqlite3.connect('user.db')
+    # This allows you to access columns by name (like a dictionary)
+    conn.row_factory = sqlite3.Row 
+    return conn
 
     #create user data base    
 def initialize_db():
@@ -53,7 +63,24 @@ def receive_data():
 
     return json.loads('{"success": true}')
     
+@app.route('/user/validate', methods=['POST', 'OPTIONS'])
 
+def login():
+    """Receives login credentials and verifies them against the stored hash."""
+    username = request.json['Username']
+    password = request.json['Password']
+
+    conn = get_db_connection()
+    user_row = conn.execute('SELECT * FROM user WHERE username = ?', (username,)).fetchone()
+    conn.close()
+
+    # Check if user exists and if the submitted password matches the stored hash
+    if user_row and bcrypt.check_password_hash(user_row['password_hash'], password):
+        # login handling
+        return json.loads({'message': 'Login successful!'})
+    else:
+        # AUTHENTICATION FAILED
+        return json.loads({'error': 'Invalid username or password'}), 401 # Unauthorized
 
 if __name__ == "__main__":
     #initialize_db() --> we can initialize manually since we only have to do this once
