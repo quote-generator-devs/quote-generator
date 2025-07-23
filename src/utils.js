@@ -78,4 +78,14 @@ export async function validateUser(data) {
 
     const result = await response.json();
     console.log(result);
+
+    if(result.id === "success")
+    {
+        return "login";
+    }
+
+    else
+    {
+        return "signup";
+    }
 }

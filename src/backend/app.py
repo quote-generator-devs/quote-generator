@@ -3,7 +3,7 @@
 
 #imports
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 import json
@@ -83,10 +83,10 @@ def login():
     # Check if user exists and if the submitted password matches the stored hash
     if user_row and bcrypt.check_password_hash(user_row['password'], password):
         # login handling
-        return json.loads('{"message": "Login successful!"}')
+        return jsonify(message="Login successful!", id="success")
     else:
         # AUTHENTICATION FAILED
-        return json.loads('{"error": "Invalid username or password"}'), 401 # Unauthorized
+        return jsonify(error="Invalid username or password", id="failure"), 401
 
 if __name__ == "__main__":
     #initialize_db() --> we can initialize manually since we only have to do this once
