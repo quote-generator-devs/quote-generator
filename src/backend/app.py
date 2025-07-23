@@ -12,7 +12,6 @@ app= Flask(__name__)
 CORS(app, origins=['http://localhost:3000'])
 
 
-
 ###DATABASE SECTION###:
     #to create: 
             # user db
@@ -21,11 +20,12 @@ CORS(app, origins=['http://localhost:3000'])
     #create user data base    
 def initialize_db():
     connect= sqlite3.connect('user.db')
-    connect.execute("DROP TABLE IF EXISTS USER")
+    #DROP Table clears out the old table, so the data is never stored
+    #connect.execute("DROP TABLE IF EXISTS USER")
 
 
-    #create a table
-    connect.execute('''CREATE TABLE USER
+    #create a table IF IT DOESN'T EXIST
+    connect.execute('''CREATE TABLE IF NOT EXISTS USER
                 (ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 USERNAME TEXT NOT NULL,
                 PASSWORD TEXT NOT NULL);
@@ -37,27 +37,31 @@ def initialize_db():
 @app.route("/user/db", methods=['POST', 'OPTIONS'])
 
 def receive_data():
-    
-
     if request.is_json: 
         data=request.json
+        print("RECEIVED JSON:", data) 
         username= data['Username']
         password= data['Password']
        
-    connect=sqlite3.connect('user.db')
-    connect.execute("INSERT INTO USER (USERNAME, PASSWORD) VALUES (?,?)", (username, password))
-    connect.commit()
-    connect.close()
+
+        connect=sqlite3.connect('user.db')
+        connect.execute("INSERT INTO USER (USERNAME, PASSWORD) VALUES (?,?)", (username, password))
+        connect.commit()
+        connect.close()
+        print(f"INSERTED USER: {username}") 
+
 
     return json.loads('{"success": true}')
     
 
 
 if __name__ == "__main__":
+    #initialize_db() --> we can initialize manually since we only have to do this once
     initialize_db()
 
-    #makes sure flask runs in the background
-    app.run(debug=True)
+    
+    #makes sure flask runs in the background + specify the port
+    app.run(debug=True, port=5001)
 
 
 
@@ -69,5 +73,4 @@ if __name__ == "__main__":
 
 
 ###OPENAI SECTION###
-
 

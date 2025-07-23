@@ -40,7 +40,7 @@ export async function addUser(data) {
             Password: hashedPassword //overwrites the plaintext password
         };
 
-        const response = await fetch('http://localhost:5000/user/db', {
+        const response = await fetch('http://localhost:5001/user/db', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -38,6 +38,8 @@ function NavBar() {
       <NavLink class="saved_quotes" to="/saved-quotes">Saved Quotes</NavLink>
       <NavLink class="about_us" to="/about-us">About Us</NavLink>
       <NavLink class="profile" to="/profile">Profile</NavLink>
+      <NavLink class="loginBtn" to="/profile"></NavLink>
+      <NavLink class="signUpBtn" to="/profile"></NavLink>
       </div>
     </div>
   );
