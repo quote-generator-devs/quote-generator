@@ -154,9 +154,9 @@ def response():
             contents=message,
         )
 
-        print(stream.choices[0].message.content)
+        print(response)
 
-        return jsonify(stream.choices[0].message.content)
+        return jsonify(response)
     
     except:
         print("error")
