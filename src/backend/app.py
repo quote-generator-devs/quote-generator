@@ -9,8 +9,8 @@ from flask_bcrypt import Bcrypt
 import json
 from dotenv import load_dotenv
 import os
+import openai
 from google import genai
-from google.genai import types
 
 
 load_dotenv() # load variables from .env file
@@ -153,12 +153,12 @@ def response():
             contents=message,
         )
 
-        print(response.text)
+        print(stream.choices[0].message.content)
 
-        return jsonify(response.text)
+        return jsonify(stream.choices[0].message.content)
     
-    except Exception as e:
-        print("error:", e)
+    except:
+        print("error")
             
 
 if __name__ == "__main__":
