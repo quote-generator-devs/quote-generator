@@ -152,6 +152,7 @@ def response():
         )
 
         # modify response into JSON for easy handling in JS
+        print(response)
         data_dict = json.loads(response.text)
         print("\n", data_dict, "\n")
         return jsonify(data_dict)
