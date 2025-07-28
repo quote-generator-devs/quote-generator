@@ -154,7 +154,7 @@ def response():
 
         print(stream.choices[0].message.content)
 
-        return jsonify(stream.choices[0].message.content)
+        return jsonify(json.loads(stream.choices[0].message.content))
             
 
 if __name__ == "__main__":
