@@ -98,11 +98,12 @@ export async function generateQuotes(data)
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: data,
         credentials: 'include'
     });
 
-    const result= await response.json();
-
+    const result= await response.text();
+    console.log(result)
+    return result;
 
 }
