@@ -99,18 +99,15 @@ def login():
 def response():
     try:
         #obtain the user response
-        print(request)
         data=request.get_json()
-        print(data)
         message= data["message"]
-        print(message)
 
         client = genai.Client(api_key=gemini_api_key)
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             config=types.GenerateContentConfig(
-                system_instruction="""You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON with randomized IDs and the name "OpenAI", following the given format:
+                system_instruction="""You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON (without adding "```json" tags) with randomized IDs and the name "Gemini", following the given format:
                                     {
                                         "quotes": [
                                             {
@@ -153,12 +150,14 @@ def response():
             contents=message,
         )
 
-        print(response.text)
-
-        return jsonify(response.text)
+        # modify response into JSON for easy handling in JS
+        data_dict = json.loads(response.text)
+        print("\n", data_dict, "\n")
+        return jsonify(data_dict)
     
     except Exception as e:
         print("error:", e)
+        return jsonify({"error": str(e)}), 500
             
 
 if __name__ == "__main__":

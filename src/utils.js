@@ -19,21 +19,22 @@ export async function searchQuotes(query) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
-            return await generateQuotes(aiQuery);
+            const generated = await generateQuotes(aiQuery);
+            return generated.quotes;
         }
 
         const data = await response.json();
         console.log(data);
         if (data.quotes.length === 0) {
-            const res = await generateQuotes(aiQuery);
-            console.log(res);
-            return res;
+            const generated = await generateQuotes(aiQuery);
+            return generated.quotes;
         }
         return data.quotes;
 
     } catch (error) {
         console.error(error);
-        return await generateQuotes(aiQuery);
+        const generated = await generateQuotes(aiQuery);
+        return generated.quotes;
     }
 }
 
