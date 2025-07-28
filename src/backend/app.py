@@ -94,7 +94,7 @@ def login():
         # AUTHENTICATION FAILED
         return jsonify(error="Invalid username or password", id="failure"), 401
 
-@app.route('/search/response', methods=['GET','POST'])
+@app.route('/search/response', methods=['GET','POST', 'OPTIONS'])
 def response():
 
     openai.api_key = open_ai_api_key
@@ -109,20 +109,52 @@ def response():
             model = "gpt-4",
 
             #puts in the user response
-            messages= [{"role": "system", "content": "You are a helpful quote generator. The user will provide a word or phrase and you must generate a quote based on the mood requested by the user. Wrap all of your quotes individually with <blockquote> HTML tags."}, 
-                       {"role": "user", "content": message}],
-            stream=True
+            messages= [{"role": "system", "content": """You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON with randomized IDs and the name "OpenAI", following the given format:
+                        {
+                            "quotes": [
+                                {
+                                    "id": "7OPFznDBHv",
+                                    "content": "This world, after all our science and sciences, is still a miracle; wonderful, inscrutable, magical and more, to whosoever will think of it.",
+                                    "author": {
+                                        "name": "Thomas Carlyle"
+                                    }
+                                },
+                                {
+                                    "id": "F8cSGcIyVr",
+                                    "content": "Any sufficiently advanced technology is equivalent to magic.",
+                                    "author": {
+                                        "name": "Arthur C. Clarke"
+                                    }
+                                },
+                                {
+                                    "id": "XdHXArQe1E",
+                                    "content": "Patience and perseverance have a magical effect before which difficulties disappear and obstacles vanish.",
+                                    "author": {
+                                        "name": "John Adams"
+                                    }
+                                },
+                                {
+                                    "id": "voQP5QM0kA",
+                                    "content": "Real magic in relationships means an absence of judgement of others.",
+                                    "author": {
+                                        "name": "Wayne Dyer"
+                                    }
+                                },
+                                {
+                                    "id": "8UxpbEi4hD",
+                                    "content": "The universe is full of magical things, patiently waiting for our wits to grow sharper.",
+                                    "author": {
+                                        "name": "Eden Phillpotts"
+                                    }
+                                }
+                            ]
+                        }"""}, 
+                       {"role": "user", "content": message}]
         )
 
-        for chunk in stream:
+        print(stream.choices[0].message.content)
 
-            #checks if there is actual text
-            if chunk.choices[0].delta.content is not None:
-
-                #sends the text back to the client if its available
-                yield(chunk.choices[0].delta.content)
-
-    return generate(), {"Content-Type": "text/plain"}
+        return jsonify(stream.choices[0].message.content)
             
 
 if __name__ == "__main__":
