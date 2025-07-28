@@ -14,22 +14,26 @@ export async function searchQuotes(query) {
     // NOTE: Quote API may need to be changed or we may need to make our own searchable database of quotes if we want to publish this
     const apiUrl =  !query.trim() ? `https://api.quotable.kurokeita.dev/api/quotes/random?limit=${maxQuotes}` : `https://api.quotable.kurokeita.dev/api/quotes/random?limit=${maxQuotes}&query=${query}`;
 
+    const aiQuery = JSON.parse(`{"message": "${!query.trim() ? "random" : query}"}`)
+
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
-            return await generateQuotes(!query.trim() ? "random" : query);
+            return await generateQuotes(aiQuery);
         }
 
         const data = await response.json();
         console.log(data);
         if (data.quotes.length === 0) {
-            return await generateQuotes(!query.trim() ? "random" : query);
+            const res = await generateQuotes(aiQuery);
+            console.log(res);
+            return res;
         }
         return data.quotes;
 
     } catch (error) {
         console.error(error);
-        return await generateQuotes(!query.trim() ? "random" : query);
+        return await generateQuotes(aiQuery);
     }
 }
 

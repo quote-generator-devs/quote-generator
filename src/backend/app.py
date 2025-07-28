@@ -9,7 +9,8 @@ from flask_bcrypt import Bcrypt
 import json
 from dotenv import load_dotenv
 import os
-import openai
+from google import genai
+from google.genai import types
 
 
 load_dotenv() # load variables from .env file
@@ -18,7 +19,7 @@ app= Flask(__name__)
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 bcrypt = Bcrypt(app)
 
-open_ai_api_key = os.getenv('OPEN_AI_API_KEY')
+gemini_api_key = os.getenv('GEMINI_API_KEY')
 
 
 ###DATABASE SECTION###:
@@ -97,8 +98,6 @@ def login():
 @app.route('/search/response', methods=['GET','POST'])
 def response():
     try:
-        openai.api_key = open_ai_api_key
-
         #obtain the user response
         print(request)
         data=request.get_json()
@@ -106,60 +105,60 @@ def response():
         message= data["message"]
         print(message)
 
-        # def generate():
-        #change the openAPI word
-        stream= openai.chat.completions.create(
-            model = "gpt-4",
+        client = genai.Client(api_key=gemini_api_key)
 
-            #puts in the system context and the user response
-            messages= [{"role": "system", "content": """You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON with randomized IDs and the name "OpenAI", following the given format:
-                        {
-                            "quotes": [
-                                {
-                                    "id": "7OPFznDBHv",
-                                    "content": "This world, after all our science and sciences, is still a miracle; wonderful, inscrutable, magical and more, to whosoever will think of it.",
-                                    "author": {
-                                        "name": "Thomas Carlyle"
-                                    }
-                                },
-                                {
-                                    "id": "F8cSGcIyVr",
-                                    "content": "Any sufficiently advanced technology is equivalent to magic.",
-                                    "author": {
-                                        "name": "Arthur C. Clarke"
-                                    }
-                                },
-                                {
-                                    "id": "XdHXArQe1E",
-                                    "content": "Patience and perseverance have a magical effect before which difficulties disappear and obstacles vanish.",
-                                    "author": {
-                                        "name": "John Adams"
-                                    }
-                                },
-                                {
-                                    "id": "voQP5QM0kA",
-                                    "content": "Real magic in relationships means an absence of judgement of others.",
-                                    "author": {
-                                        "name": "Wayne Dyer"
-                                    }
-                                },
-                                {
-                                    "id": "8UxpbEi4hD",
-                                    "content": "The universe is full of magical things, patiently waiting for our wits to grow sharper.",
-                                    "author": {
-                                        "name": "Eden Phillpotts"
-                                    }
-                                }
-                            ]
-                        }"""}, 
-                    {"role": "user", "content": message}]
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            config=types.GenerateContentConfig(
+                system_instruction="""You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON with randomized IDs and the name "OpenAI", following the given format:
+                                    {
+                                        "quotes": [
+                                            {
+                                                "id": "7OPFznDBHv",
+                                                "content": "This world, after all our science and sciences, is still a miracle; wonderful, inscrutable, magical and more, to whosoever will think of it.",
+                                                "author": {
+                                                    "name": "Thomas Carlyle"
+                                                }
+                                            },
+                                            {
+                                                "id": "F8cSGcIyVr",
+                                                "content": "Any sufficiently advanced technology is equivalent to magic.",
+                                                "author": {
+                                                    "name": "Arthur C. Clarke"
+                                                }
+                                            },
+                                            {
+                                                "id": "XdHXArQe1E",
+                                                "content": "Patience and perseverance have a magical effect before which difficulties disappear and obstacles vanish.",
+                                                "author": {
+                                                    "name": "John Adams"
+                                                }
+                                            },
+                                            {
+                                                "id": "voQP5QM0kA",
+                                                "content": "Real magic in relationships means an absence of judgement of others.",
+                                                "author": {
+                                                    "name": "Wayne Dyer"
+                                                }
+                                            },
+                                            {
+                                                "id": "8UxpbEi4hD",
+                                                "content": "The universe is full of magical things, patiently waiting for our wits to grow sharper.",
+                                                "author": {
+                                                    "name": "Eden Phillpotts"
+                                                }
+                                            }
+                                        ]
+                                    }"""),
+            contents=message,
         )
 
-        print(stream.choices[0].message.content)
+        print(response.text)
 
-        return jsonify(stream.choices[0].message.content)
-    except:
-        print("error")
+        return jsonify(response.text)
+    
+    except Exception as e:
+        print("error:", e)
             
 
 if __name__ == "__main__":
