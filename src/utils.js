@@ -114,6 +114,6 @@ export async function generateQuotes(data)
     const result= await response.json();
     console.log(result)
 
-    return result.quotes;
+    return result;
 
 }
