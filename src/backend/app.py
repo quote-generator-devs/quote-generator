@@ -94,21 +94,24 @@ def login():
         # AUTHENTICATION FAILED
         return jsonify(error="Invalid username or password", id="failure"), 401
 
-@app.route('/search/response', methods=['GET','POST', 'OPTIONS'])
+@app.route('/search/response', methods=['GET','POST'])
 def response():
+    try:
+        openai.api_key = open_ai_api_key
 
-    openai.api_key = open_ai_api_key
+        #obtain the user response
+        print(request)
+        data=request.get_json()
+        print(data)
+        message= data["message"]
+        print(message)
 
-    #obtain the user response
-    data=request.get_json()
-    message= data["message"]
-
-    def generate():
+        # def generate():
         #change the openAPI word
         stream= openai.chat.completions.create(
             model = "gpt-4",
 
-            #puts in the user response
+            #puts in the system context and the user response
             messages= [{"role": "system", "content": """You are a helpful quote generator. The user will provide a word or phrase and you must generate 10 quotes based on the mood requested by the user. Format your quotes in JSON with randomized IDs and the name "OpenAI", following the given format:
                         {
                             "quotes": [
@@ -149,12 +152,14 @@ def response():
                                 }
                             ]
                         }"""}, 
-                       {"role": "user", "content": message}]
+                    {"role": "user", "content": message}]
         )
 
         print(stream.choices[0].message.content)
 
-        return jsonify(json.loads(stream.choices[0].message.content))
+        return jsonify(stream.choices[0].message.content)
+    except:
+        print("error")
             
 
 if __name__ == "__main__":
