@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 import openai
 from google import genai
+from google.genai import types
 
 
 load_dotenv() # load variables from .env file
