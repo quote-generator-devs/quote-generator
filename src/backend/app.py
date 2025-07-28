@@ -109,7 +109,8 @@ def response():
             model = "gpt-4",
 
             #puts in the user response
-            messages= [{"role": "user", "content": message}],
+            messages= [{"role": "system", "content": "You are a helpful quote generator. The user will provide a word or phrase and you must generate a quote based on the mood requested by the user. Wrap all of your quotes individually with <blockquote> HTML tags."}, 
+                       {"role": "user", "content": message}],
             stream=True
         )
 
