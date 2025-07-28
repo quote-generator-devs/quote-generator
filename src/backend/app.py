@@ -153,7 +153,11 @@ def response():
 
         # modify response into JSON for easy handling in JS
         print(response)
+
+        #converts the response into a Python dictionary
         data_dict = json.loads(response.text)
+
+        #converts the Python dictionary back to a JSON String to be used
         return jsonify(data_dict)
     
     except Exception as e:
