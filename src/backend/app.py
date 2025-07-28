@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 import json
 from dotenv import load_dotenv
 import os
+import openai
 from google import genai
 from google.genai import types
 
