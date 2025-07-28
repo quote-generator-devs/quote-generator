@@ -7,12 +7,18 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 import json
-import sqlite3
+from dotenv import load_dotenv
+import os
+import openai
 
+
+load_dotenv() # load variables from .env file
 
 app= Flask(__name__)
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 bcrypt = Bcrypt(app)
+
+open_ai_api_key = os.getenv('OPEN_AI_API_KEY')
 
 
 ###DATABASE SECTION###:
@@ -91,13 +97,15 @@ def login():
 @app.route('/search/response', methods=['GET','POST'])
 def response():
 
+    openai.api_key = open_ai_api_key
+
     #obtain the user response
     data=request.get_json()
     message= data["message"]
 
     def generate():
         #change the openAPI word
-        stream= openAPI.chat.completions.create(
+        stream= openai.chat.completions.create(
             model = "gpt-4",
 
             #puts in the user response
