@@ -88,6 +88,34 @@ def login():
         # AUTHENTICATION FAILED
         return jsonify(error="Invalid username or password", id="failure"), 401
 
+@app.route('/search/response', methods=['GET','POST'])
+def response():
+
+    #obtain the user response
+    data=request.get_json()
+    message= data["message"]
+
+    def generate():
+        #change the openAPI word
+        stream= openAPI.chat.completions.create(
+            model = "gpt-4",
+
+            #puts in the user response
+            messages= [{"role": "user", "content": message}],
+            stream=True
+        )
+
+        for chunk in stream:
+
+            #checks if there is actual text
+            if chunk.choices[0].delta.content is not None:
+
+                #sends the text back to the client if its available
+                yield(chunk.choices[0].delta.content)
+
+    return generate(), {"Content-Type": "text/plain"}
+            
+
 if __name__ == "__main__":
     #initialize_db() --> we can initialize manually since we only have to do this once
     initialize_db()
