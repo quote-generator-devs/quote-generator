@@ -17,16 +17,19 @@ export async function searchQuotes(query) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
-            generateQuotes(!query.trim() ? "random" : query);
+            return await generateQuotes(!query.trim() ? "random" : query);
         }
 
         const data = await response.json();
         console.log(data);
+        if (data.quotes.length === 0) {
+            return await generateQuotes(!query.trim() ? "random" : query);
+        }
         return data.quotes;
 
     } catch (error) {
         console.error(error);
-        generateQuotes(!query.trim() ? "random" : query);
+        return await generateQuotes(!query.trim() ? "random" : query);
     }
 }
 
