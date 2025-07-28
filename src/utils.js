@@ -89,3 +89,20 @@ export async function validateUser(data) {
         return "signup";
     }
 }
+
+
+export async function generateQuotes(data)
+{
+    const response = await fetch('http://localhost:5001/search/response', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+    });
+
+    const result= await response.json();
+    
+
+}
