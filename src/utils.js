@@ -18,6 +18,7 @@ export async function searchQuotes(query) {
         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
+            generateQuotes(!query.trim() ? "random" : query);
         }
 
         const data = await response.json();
@@ -27,6 +28,7 @@ export async function searchQuotes(query) {
     } catch (error) {
         console.error(error);
         throw new Error("Could not fetch quotes. Please try again later.");
+        generateQuotes(!query.trim() ? "random" : query);
     }
 }
 
