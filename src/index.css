@@ -377,9 +377,19 @@ input {
     font-family: "Garamond", "sans-serif";
     font-size: 25px;
     width: 400px;
-    background-color: rgb(181, 251, 255);
+    background-image: linear-gradient(to right,rgb(193, 251, 253),rgb(200, 242, 244));
     color:white;
     border-radius: 30px;
+}
+
+.theme1-container{
+   border-radius: 20px;
+   color: grey; 
+   text-align: center;
+}
+
+.theme1LI{
+    background-image: linear-gradient(to right,rgb(213, 247, 248),rgb(229, 251, 252));
 }
 
 
@@ -390,10 +400,22 @@ input {
     font-family: "Garamond", "sans-serif";
     width: 400px;
     font-size: 25px;
-    background-color: rgb(181, 255, 197);
+    background-image: linear-gradient(to right,rgb(200, 253, 214),rgb(215, 252, 223));
     color:white;
     border-radius: 30px;
 }
+
+
+.theme2-container{
+   border-radius: 20px;
+   color: grey; 
+   text-align: center;
+}
+
+.theme2LI{
+    background-image: linear-gradient(to right,rgb(209, 255, 221),rgb(239, 244, 240));
+}
+
 
 
 .theme3{
@@ -403,9 +425,20 @@ input {
     font-family: "Garamond", "sans-serif";
     width: 400px;
     font-size: 25px;
-    background-color: rgb(248, 181, 255);
+    background-image: linear-gradient(to right,rgb(243, 208, 249),rgb(252, 230, 252));
     color:white;
     border-radius: 30px;
+}
+
+
+.theme3-container{
+   border-radius: 20px;
+   color: grey; 
+   text-align: center;
+}
+
+.theme3LI{
+    background-image: linear-gradient(to right,rgb(249, 212, 255),rgb(246, 234, 246));
 }
 
 
@@ -416,9 +449,20 @@ input {
     font-family: "Garamond", "sans-serif";
     width: 400px;
     font-size: 25px;
-    background-color: rgb(255, 214, 181);
+    background-image: linear-gradient(to right,rgb(255, 214, 181),rgb(250, 255, 204));
     color:white;
     border-radius: 30px;
+}
+
+
+.theme4-container{
+   border-radius: 20px;
+   color: grey; 
+   text-align: center;
+}
+
+.theme4LI{
+     background-image: linear-gradient(to right,rgb(255, 214, 181),rgb(250, 255, 204));
 }
 
 .post-container{
@@ -469,7 +513,6 @@ input {
 .likeBtn, .saveBtn:hover{
     cursor:pointer;
 }
-
 
 
 
