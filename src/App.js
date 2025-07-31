@@ -274,7 +274,7 @@ function Profile(){
         console.error(err);
         setError(err.message);
         // Clear invalid token from storage
-        //localStorage.removeItem('accessToken');
+        localStorage.removeItem('accessToken');
       } finally {
         setIsLoading(false);
       }
