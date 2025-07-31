@@ -89,6 +89,7 @@ export async function validateUser(data) {
 
     if(result.id === "success")
     {
+        localStorage.setItem('accessToken', result.access_token);
         return "login";
     }
 
@@ -96,6 +97,19 @@ export async function validateUser(data) {
     {
         return "signup";
     }
+}
+
+export async function getUser() {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch('http://localhost:5001/api/profile', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    console.log(result);
+    return result;
 }
 
 
