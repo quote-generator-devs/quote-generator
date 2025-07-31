@@ -239,6 +239,8 @@ function Profile(){
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate(); // Used for redirecting
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
