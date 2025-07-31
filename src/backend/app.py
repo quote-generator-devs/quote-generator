@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from google.genai import types
-import jwt
 
 
 load_dotenv() # load variables from .env file
