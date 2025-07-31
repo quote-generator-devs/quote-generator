@@ -90,12 +90,12 @@ export async function validateUser(data) {
 
     if(result.id === "failure")
     {
-        localStorage.setItem('accessToken', str(result.access_token));
         return "login";
     }
 
     else
     {
+        localStorage.setItem('accessToken', result.access_token);
         return "login";
     }
 }
