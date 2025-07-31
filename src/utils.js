@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 
 
-
 /**
  * Searches for quotes using the Quotable API.
  * @param {string} query - The term to search for (e.g., 'wisdom', 'technology').
@@ -91,13 +90,26 @@ export async function validateUser(data) {
 
     if(result.id === "failure")
     {
-        return "signup";
+        return "login";
     }
 
     else
     {
         return "login";
     }
+}
+
+export async function getUser() {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch('http://localhost:5001/api/profile', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const result = await response.json();
+    console.log(result);
+    return result;
 }
 
 

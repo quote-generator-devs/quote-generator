@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
-import { searchQuotes, addUser, validateUser } from './utils';
+import { searchQuotes, addUser, validateUser, getUser } from './utils';
 
 function App() {
   return (
@@ -235,6 +235,64 @@ function AboutUs() {
 }
 
 function Profile(){
+  const [profileData, setProfileData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // Used for redirecting
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+
+        // If there's no token, the user is not logged in.
+        if (!token) {
+          setError('No authorization token found. Please log in.');
+          setIsLoading(false);
+          // Redirect to login page after a delay
+          setTimeout(() => navigate('/login'), 2000);
+          return;
+        }
+
+        const response = await fetch('http://localhost:5001/api/profile', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the JWT in the Authorization header
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data. Your session may have expired.'); // Returns error 401 or 422
+        }
+
+        const data = await response.json();
+        setProfileData(data);
+
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+        // Clear invalid token from storage
+        localStorage.removeItem('accessToken');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Show a loading message while fetching data
+  if (isLoading) {
+    return <div className="profile"><h1>Loading Profile...</h1></div>;
+  }
+
+  // Show an error message if fetching data failed
+  if (error) {
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>{error}</p></div>;
+  }
+
   return (
     <div class = "profile">
       <h1> Profile </h1>
@@ -243,12 +301,12 @@ function Profile(){
       </div>
       <div class = "info">
         <div class = "username-follow">
-          <p class = "profile-element"> @username </p>
+          <p class = "profile-element"> @{profileData.username} </p>
           <span class = "separator">|</span>
           <button class = "follow-button">Follow</button>
         </div>
-        <p class = "profile-element"><b>Name</b></p>
-        <p class = "profile-element">Bio</p>
+        <p class = "profile-element"><b>Name:</b> {profileData.name || 'Not set'}</p>
+        <p class = "profile-element"><b>Bio:</b> {profileData.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
         <p class = "profile-element">Published Quotes</p>
       </div>

@@ -6,13 +6,12 @@ import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 import json
 from dotenv import load_dotenv
 import os
-import openai
 from google import genai
 from google.genai import types
-import jwt
 
 
 load_dotenv() # load variables from .env file
@@ -20,6 +19,9 @@ load_dotenv() # load variables from .env file
 app= Flask(__name__)
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 bcrypt = Bcrypt(app)
+
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+jwt = JWTManager(app)
 
 gemini_api_key = os.getenv('GEMINI_API_KEY')
 
@@ -94,11 +96,31 @@ def login():
     # Check if user exists and if the submitted password matches the stored hash
     if user_row and bcrypt.check_password_hash(user_row['password'], password):
         # login handling
-        
-        return jsonify(message="Login successful!", id="success")
+        user_id = user_row['ID']
+        access_token = create_access_token(identity=str(user_id))
+        return jsonify(access_token=access_token, message="Login successful!", id="success")
     else:
         # AUTHENTICATION FAILED
         return jsonify(error="Invalid username or password", id="failure"), 401
+
+
+@app.route('/api/profile', methods=['GET'])
+@jwt_required() # This decorator protects the route
+def get_profile():
+    """Protected route that returns the logged-in user's data."""
+    # get_jwt_identity() returns the identity we set in create_access_token()
+    current_user_id = get_jwt_identity()
+    
+    conn = get_db_connection()
+    user_row = conn.execute('SELECT ID, USERNAME FROM user WHERE ID = ?', (current_user_id,)).fetchone()
+    conn.close()
+
+    if not user_row:
+        return jsonify({"error": "User not found"}), 404
+        
+    # Return the user's data (without the password hash!)
+    return jsonify(id=user_row['ID'], username=user_row['USERNAME'])
+
 
 @app.route('/search/response', methods=['GET','POST'])
 def response():
@@ -182,9 +204,4 @@ if __name__ == "__main__":
 
 
 ###API SECTION ###
-
-
-
-
-###OPENAI SECTION###
 
