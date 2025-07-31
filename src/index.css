@@ -514,6 +514,20 @@ input {
     cursor:pointer;
 }
 
+/**Saving Quotes**/
+.saveQuotesBtn {
+  position:absolute;
+  align-self:flex-start;
+  margin-top:100px;
+  padding: 8px 8px;
+  background-color:rgb(246, 255, 152);
+  border-radius: 10px;
+  cursor:pointer;
+  color:#aaa8a8;
+  border:none;
+  font-size: 16px;
+
+}
 
 
 @media only screen and (min-width: 992px) {
