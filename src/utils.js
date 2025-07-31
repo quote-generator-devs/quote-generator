@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
+
 
 /**
  * Searches for quotes using the Quotable API.

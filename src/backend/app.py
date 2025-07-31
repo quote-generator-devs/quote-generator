@@ -12,6 +12,7 @@ import os
 import openai
 from google import genai
 from google.genai import types
+import jwt
 
 
 load_dotenv() # load variables from .env file
@@ -21,6 +22,8 @@ CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 bcrypt = Bcrypt(app)
 
 gemini_api_key = os.getenv('GEMINI_API_KEY')
+
+app.config['SECRET_KEY'] = 'we-are-awesome-quotegeneratorsAI'
 
 
 ###DATABASE SECTION###:
@@ -91,6 +94,7 @@ def login():
     # Check if user exists and if the submitted password matches the stored hash
     if user_row and bcrypt.check_password_hash(user_row['password'], password):
         # login handling
+        
         return jsonify(message="Login successful!", id="success")
     else:
         # AUTHENTICATION FAILED
