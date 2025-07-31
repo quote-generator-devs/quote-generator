@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
+
 
 
 /**
@@ -89,14 +89,14 @@ export async function validateUser(data) {
     const result = await response.json();
     console.log(result);
 
-    if(result.id === "success")
+    if(result.id === "failure")
     {
-        return "login";
+        return "signup";
     }
 
     else
     {
-        return "signup";
+        return "login";
     }
 }
 
