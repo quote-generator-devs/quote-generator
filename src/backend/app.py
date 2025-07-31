@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from google.genai import types
+import jwt
 
 
 load_dotenv() # load variables from .env file
@@ -24,6 +25,8 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
 gemini_api_key = os.getenv('GEMINI_API_KEY')
+
+app.config['SECRET_KEY'] = 'we-are-awesome-quotegeneratorsAI'
 
 
 ###DATABASE SECTION###:

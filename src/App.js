@@ -360,6 +360,7 @@ function QuotesFound() {
               <li key={quote.id}>
                 <blockquote>"{quote.content}"</blockquote>
                 <cite>- {quote.author.name}</cite>
+                <button className="saveQuotesBtn">Save</button>
               </li>
             ))}
           </ul>
