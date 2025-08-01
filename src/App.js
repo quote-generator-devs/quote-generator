@@ -311,7 +311,8 @@ function Profile(){
         <div class= "profilePgBtns">
           <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
           <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
-          <NavLink className="logOutBtn" to="/log-out">Log Out</NavLink>
+          <NavLink className="logOutBtn" to = "/login" onClick = {() => 
+            localStorage.removeItem('accessToken')}>Log Out</NavLink>
         </div>
       </div>
     </div>

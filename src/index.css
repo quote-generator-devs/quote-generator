@@ -343,12 +343,12 @@ input {
 
 
 .publishedQuotesBtn, .savedQuotesBtn, .logOutBtn{
-    background-color: rgb(242, 255, 192);
-    border-radius: 10px;
+    background-color: cornsilk;
+    border-radius: 5px;
     border-color: rgb(235, 195, 227);
     margin: 30px;
     text-decoration: none;
-    color:#aaa8a8;
+    color:#929191;
 }
 
 /* Saved Quotes Styling */
