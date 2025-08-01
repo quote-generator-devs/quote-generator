@@ -351,6 +351,10 @@ input {
     color:#929191;
 }
 
+.logOutBtn{
+    color: rgb(239, 66, 66);
+}
+
 /* Saved Quotes Styling */
 .saved-quotes-body ul {
     list-style-type: none;
