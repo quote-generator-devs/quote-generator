@@ -355,6 +355,14 @@ input {
     color: rgb(239, 66, 66);
 }
 
+.logOutBtn:hover{
+    background-color: rgb(221, 144, 144);
+}
+
+.publishedQuotesBtn:hover, .savedQuotesBtn:hover{
+    background-color:rgb(235, 195, 227);
+}
+
 /* Saved Quotes Styling */
 .saved-quotes-body ul {
     list-style-type: none;
