@@ -48,10 +48,20 @@ def initialize_db():
 
 
     #create a table IF IT DOESN'T EXIST
+    #CREATES USER.DB TABLE
     connect.execute('''CREATE TABLE IF NOT EXISTS USER
                 (ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 USERNAME TEXT NOT NULL UNIQUE,
                 PASSWORD TEXT NOT NULL);
+    ''')
+
+    #CREATE A SAVED QUOTES TABLE
+    connect.execute('''CREATE TABLE IF NOT EXISTS SAVED_QUOTES (
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    USER_ID INTEGER NOT NULL,
+                    QUOTE_JSON TEXT NOT NULL,
+                    FOREIGN KEY(USER_ID) REFERENCES USER(ID)
+                );
     ''')
 
     connect.close()
@@ -120,6 +130,81 @@ def get_profile():
         
     # Return the user's data (without the password hash!)
     return jsonify(id=user_row['ID'], username=user_row['USERNAME'])
+
+@app.route('/quotes/save', methods=['POST'])
+@jwt_required()
+def save_quote():
+    """
+    Protected route to save a quote for the logged-in user.
+    The request body should contain the quote dictionary.
+    """
+
+    #get_jwt_identity() returns the identity we set in create_access_token()
+    current_user_id = get_jwt_identity()
+
+    #reads the data provided by the frontend 
+    data = request.get_json()
+
+    if not data or 'quote' not in data or 'author' not in data:
+        return jsonify({"error": "Invalid quote data provided"}), 400
+
+    #calls the helper method to save the quote
+    if save_quote_for_user(current_user_id, data):
+        return jsonify({"message": "Quote saved successfully"}), 201
+    else:
+        return jsonify({"error": "Failed to save quote"}), 500
+
+# Helper function to save a quote to the database
+def save_quote_for_user(user_id, quote_dict):
+    """Saves a quote for a specific user, converting the dict to a JSON string."""
+    conn = get_db_connection()
+    try:
+        # Convert the Python dictionary to a JSON string for storage
+        quote_json_string = json.dumps(quote_dict)
+
+        #inserts into the database the saved quotes --> associates it with 
+        # the user_id of the current user
+        conn.execute(
+            "INSERT INTO SAVED_QUOTES (USER_ID, QUOTE_JSON) VALUES (?, ?)",
+            (user_id, quote_json_string)
+        )
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Database error saving quote: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+@app.route('/quotes/saved', methods=['GET'])
+@jwt_required()
+def get_saved_quotes():
+    """
+    Protected route to get all saved quotes for the logged-in user.
+    """
+    user_id = get_jwt_identity()
+
+    quotes=[]
+    conn = get_db_connection()
+
+    #create a cursor to object to access db
+    cursor= conn.cursor()
+
+    #obtain all the saved quotes for the current user id
+    cursor.execute("SELECT QUOTE_JSON FROM SAVED_QUOTES WHERE USER_ID=?", (user_id,))
+
+    #fetch all of the rows of the current user id
+    userIdRows= cursor.fetchall()
+
+    #iterate through the rows and add the quote_json to the quotes array []
+    for currentRow in userIdRows:
+        #add the current quote as a dictionary
+        quotes.append(json.loads(currentRow['QUOTE_JSON']))
+
+    #return the saved quotes as a json string to be used
+    return jsonify({"saved_quotes": quotes}), 200
+
 
 
 @app.route('/search/response', methods=['GET','POST'])

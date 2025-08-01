@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
-import { searchQuotes, addUser, validateUser, getUser } from './utils';
+import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes } from './utils';
 
 function App() {
   return (
@@ -308,7 +308,11 @@ function Profile(){
         <p class = "profile-element"><b>Name:</b> {profileData.name || 'Not set'}</p>
         <p class = "profile-element"><b>Bio:</b> {profileData.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
-        <p class = "profile-element">Published Quotes</p>
+        <div class= "profilePgBtns">
+          <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
+          <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
+          <NavLink className="logOutBtn" to="/log-out">Log Out</NavLink>
+        </div>
       </div>
     </div>
   );
@@ -346,6 +350,7 @@ function QuotesFound() {
     fetchData();
   }, [query]); // The effect re-runs if the 'query' in the URL changes
 
+
   return (
     <div className="results-page">
       {!query.trim() && <h1>Random Quotes</h1>}
@@ -360,7 +365,9 @@ function QuotesFound() {
               <li key={quote.id}>
                 <blockquote>"{quote.content}"</blockquote>
                 <cite>- {quote.author.name}</cite>
-                <button className="saveQuotesBtn">Save</button>
+                <button className="saveQuotesBtn"
+                onClick= {()=> saveQuote({content: quote.content, author: {name: quote.author.name}})}
+                >Save</button>
               </li>
             ))}
           </ul>
@@ -389,13 +396,53 @@ function Activity() {
 }
 
 function SavedQuotes(){
+  const [quotes, setQuotes]= useState([]);
+  const [isLoading, setIsLoading]= useState(true);
+  const [error, setError]= useState(null);
+
+   // useEffect runs when the component mounts or when the 'query' changes
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const results = await getSavedQuotes();
+        console.log("Quotes from API:", results);
+        if (results.length === 0) {
+          setError("No Quotes Saved Yet.");
+        } else {
+          setQuotes(results);
+        }
+      } catch (err) {
+        setError("Could not fetch quotes. Please try again later.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // The effect re-runs if the 'query' in the URL changes
+
   return (
     <div class = "saved-quotes-container">
       <div class = "saved-quotes-header">
         <h1>Saved Quotes</h1>
       </div>
       <div class = "saved-quotes-body">
-        <button> Collections -{'>'} </button>
+        {isLoading && <p>Loading quotes...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {quotes.length > 0 && (
+          <ul>
+            {/* The fix is to use the 'index' from the map function as a key */}
+            {quotes.map((quote, index) => (
+              <li key={index} className="savedQuoteElement">
+                <blockquote>"{quote.quote}"</blockquote>
+                <cite>- {quote.author}</cite>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -39,6 +39,27 @@ export async function searchQuotes(query) {
     }
 }
 
+
+export async function generateQuotes(data)
+{
+    
+    const response = await fetch('http://localhost:5001/search/response', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+    });
+
+    const result= await response.json();
+    console.log(result)
+
+    return result;
+
+}
+
+
 export async function addUser(data) {
     const saltRounds = 10;
 
@@ -113,22 +134,49 @@ export async function getUser() {
     return result;
 }
 
-
-export async function generateQuotes(data)
-{
-    
-    const response = await fetch('http://localhost:5001/search/response', {
+export async function saveQuote(data){
+    const token= localStorage.getItem('accessToken');
+    const response= await fetch('http://localhost:5001/quotes/save', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data),
-        credentials: 'include'
+        body: JSON.stringify({
+            quote: data.content,
+            author: data.author.name
+        })
     });
 
-    const result= await response.json();
-    console.log(result)
+    if(response.ok)
+    {
+        console.log("Quote saved.");
+    }
+    else{
+        console.log("Failed to save Quote.");
+    }
+}
 
-    return result;
+export async function getSavedQuotes()
+{
+    const token= localStorage.getItem('accessToken');
+    const response= await fetch('http://localhost:5001/quotes/saved', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        // If the server responds with an error, throw it so it can be caught
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error: ${response.status} ${response.statusText}`);
+    }
+
+
+    const result= await response.json();
+
+    return result.saved_quotes;
 
 }
+
