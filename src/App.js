@@ -86,6 +86,7 @@ function Home() {
 function Login() {
 
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
     async function handleSubmit(e) {
       // Prevent the browser from reloading the page
       e.preventDefault();
@@ -103,13 +104,14 @@ function Login() {
       console.log(formJson); // JSON formatted (seems more useful)
       const result = await validateUser(formJson);
 
-      if(result === "login")
+      if(result.status === "login")
       {
+        setError(null);
         navigate(`/profile`);
       }
       else
       {
-        navigate(`/signup`);
+        setError(result.error || "Invalid username or password");
       }
 
     }
@@ -129,6 +131,7 @@ function Login() {
           <input type = "password" id = "password" name="Password" placeholder = "Your Password" />
           <br />
           <button class = "login-button">Login</button>
+          {error && <p style ={{color: "red"}} >{error}</p>}
           <p><b>Don't have an account? </b></p>
           <NavLink to = "/signup"> Sign Up</NavLink>
         </form>
@@ -140,6 +143,7 @@ function Login() {
 function SignUp(){
   const [error,setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     // Prevent the browser from reloading the page
@@ -163,6 +167,16 @@ function SignUp(){
       setSuccess(true);
       setError(null);
       form.reset();
+
+      const login = await validateUser({
+        Username: formJson.Username,
+        Password: formJson.Password,
+      });
+      
+      if (login.status === "login"){
+        navigate('/profile');
+      }
+      
     } else{
       setSuccess(false);
       setError(response.error);

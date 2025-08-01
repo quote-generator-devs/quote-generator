@@ -111,13 +111,13 @@ export async function validateUser(data) {
 
     if(result.id === "failure")
     {
-        return "login";
+        return {status : "fail", error: "Invalid Username or Password"};
     }
 
     else
     {
         localStorage.setItem('accessToken', result.access_token);
-        return "login";
+        return { status : "login", token: result.access_token };
     }
 }
 
