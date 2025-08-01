@@ -87,8 +87,8 @@ export async function addUser(data) {
         }
 
         const result = await response.json();
-        return {success: true, result};
         console.log(result);
+        return {success: true, result};
     }
     catch(err) {
         console.error("Failed to add user:", err);

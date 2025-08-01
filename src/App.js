@@ -104,6 +104,7 @@ function Login() {
       console.log(formJson); // JSON formatted (seems more useful)
       const result = await validateUser(formJson);
 
+      // If login is successful, navigate user to profile page.
       if(result.status === "login")
       {
         setError(null);
@@ -161,6 +162,17 @@ function SignUp(){
 
     // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
+
+    // Retrieve passwords from sign-up form.
+    const pass = formJson.Password;
+    const reenteredPass = formJson["Re-enter"];
+
+    //Checks if passwords are equal before sign up.
+    if (pass !== reenteredPass){
+      setError("Passwords do not match.");
+      return;
+    }
+
     const response = await addUser(formJson);
 
     if(response.success){
@@ -168,15 +180,16 @@ function SignUp(){
       setError(null);
       form.reset();
 
+      //If signup is successful, automatically login the user.
       const login = await validateUser({
         Username: formJson.Username,
         Password: formJson.Password,
       });
-      
+  
       if (login.status === "login"){
         navigate('/profile');
       }
-      
+
     } else{
       setSuccess(false);
       setError(response.error);
