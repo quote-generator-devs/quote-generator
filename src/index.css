@@ -186,6 +186,7 @@ input {
 .results-page > h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
+    color: grey;
 }
 
 .results-content > p {
@@ -563,10 +564,10 @@ input {
   align-self:flex-start;
   margin-top:100px;
   padding: 8px 8px;
-  background-color:rgb(246, 255, 152);
+  background-color:cornsilk;
   border-radius: 10px;
   cursor:pointer;
-  color:#aaa8a8;
+  color:#8a8989;
   border:none;
   font-size: 16px;
 
