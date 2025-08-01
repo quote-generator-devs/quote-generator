@@ -241,12 +241,14 @@ input {
     justify-content: center;
     align-items: center;
     margin-bottom: 8rem;
+    color:grey;
+    font-weight: bold;
 }
 
 .dev_team>h1 {
     text-align:center;
     font-weight: bold;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     font-size: 4rem;
 }
 
@@ -269,7 +271,7 @@ input {
 .dev>p {
     text-align:center;
     text-decoration: none;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     font-size:1.5rem;
     white-space:normal;
     word-wrap: break-word;
@@ -282,18 +284,18 @@ input {
 .dev_description>h2 {
     text-align:center;
     font-weight: bold;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     font-size: 3.5rem;
-
+    color:grey;
 }
 
 .dev_description>p {
     text-align:center;
     text-decoration: none;
-    font-family: "Copperplate", "Fantasy";
+    font-family: "Garamond", "sans-serif";
     font-size: 2rem;
-    margin: 0 15%
-
+    margin: 0 15%;
+    color: grey;
 }
 
 /* Profile Styling */
