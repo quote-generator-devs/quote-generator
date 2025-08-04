@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
-import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes } from './utils';
+import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
 
 function App() {
   return (
@@ -379,6 +379,7 @@ function Profile(){
   );
 }
 
+
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -461,9 +462,8 @@ function SavedQuotes(){
   const [isLoading, setIsLoading]= useState(true);
   const [error, setError]= useState(null);
 
-   // useEffect runs when the component mounts or when the 'query' changes
-  useEffect(() => {
-    const fetchData = async () => {
+
+  const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
@@ -482,15 +482,21 @@ function SavedQuotes(){
       }
     };
 
+  useEffect(() => {
     fetchData();
-  }, []); // The effect re-runs if the 'query' in the URL changes
-
+    }, []);
+  
+   const handleRemoveQuote = async (quote) => {
+    await removeQuote(quote);
+    fetchData(); // Re-fetch the quotes to update the UI
+  };
+  
   return (
-    <div class = "saved-quotes-container">
-      <div class = "saved-quotes-header">
+    <div className = "saved-quotes-container">
+      <div className = "saved-quotes-header">
         <h1>Saved Quotes</h1>
       </div>
-      <div class = "saved-quotes-body">
+      <div className = "saved-quotes-body">
         {isLoading && <p>Loading quotes...</p>}
         {error && <p className="error-message">{error}</p>}
         {quotes.length > 0 && (
@@ -500,6 +506,7 @@ function SavedQuotes(){
               <li key={index} className="savedQuoteElement">
                 <blockquote>"{quote.quote}"</blockquote>
                 <cite>- {quote.author}</cite>
+                <button onClick= {() => handleRemoveQuote(quote)}>Remove</button>
               </li>
             ))}
           </ul>
@@ -524,18 +531,21 @@ function Feed(){
         </div>
       </div>
 
+      {/*
       <div class="post-container">
         <div class="post-box">
-          <p class="user-title"> 👤 Reaser_The_Best_Professor_Ever</p>
-          <div class="quote">
+        <p class="user-title"> 👤 Reaser_The_Best_Professor_Ever</p>
+        <div class="quote">
           Quote will be Posted Here...
-          </div>
+        </div>
           <div class="postBtns">
             <button class="likeBtn">👍</button>
             <button class="saveBtn">⛉</button>
           </div>
         </div>
       </div>
+      */}
+    
     </div>
   );
 }

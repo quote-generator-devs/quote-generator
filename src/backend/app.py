@@ -160,7 +160,7 @@ def save_quote_for_user(user_id, quote_dict):
     conn = get_db_connection()
     try:
         # Convert the Python dictionary to a JSON string for storage
-        quote_json_string = json.dumps(quote_dict)
+        quote_json_string = json.dumps(quote_dict, sort_keys=True)
 
         #inserts into the database the saved quotes --> associates it with 
         # the user_id of the current user
@@ -192,7 +192,7 @@ def get_saved_quotes():
     cursor= conn.cursor()
 
     #obtain all the saved quotes for the current user id
-    cursor.execute("SELECT QUOTE_JSON FROM SAVED_QUOTES WHERE USER_ID=?", (user_id,))
+    cursor.execute("SELECT ID, QUOTE_JSON FROM SAVED_QUOTES WHERE USER_ID=?", (user_id,))
 
     #fetch all of the rows of the current user id
     userIdRows= cursor.fetchall()
@@ -200,10 +200,48 @@ def get_saved_quotes():
     #iterate through the rows and add the quote_json to the quotes array []
     for currentRow in userIdRows:
         #add the current quote as a dictionary
-        quotes.append(json.loads(currentRow['QUOTE_JSON']))
-
+        
+        #quotes.append(json.loads(currentRow['QUOTE_JSON']))
+        temp_quote= json.loads(currentRow["QUOTE_JSON"])
+        temp_quote['id'] = currentRow["ID"]
+        quotes.append(temp_quote)
+        
     #return the saved quotes as a json string to be used
     return jsonify({"saved_quotes": quotes}), 200
+
+
+@app.route('/quotes/remove', methods=['DELETE'])
+@jwt_required()
+def remove_quotes():
+    user_id= get_jwt_identity()
+
+    #reads the data provided by the frontend 
+    data = request.get_json()
+    quoteId= data.get("id")
+
+    #calls the helper method to save the quote
+    if remove_quote_for_user(user_id, quoteId):
+        return jsonify({"message": "Quote successfully removed"}), 200
+    else:
+        return jsonify({"error": "Failed to remove quote"}), 500
+
+
+def remove_quote_for_user(user_id, quoteId):
+    conn = get_db_connection()
+    try:
+
+        conn.execute(
+            "DELETE FROM SAVED_QUOTES WHERE USER_ID = ? AND ID = ?",
+            (user_id, quoteId)
+        )
+        conn.commit()
+        return True
+    
+    except sqlite3.Error as e:
+        print(f"Database error deleting quote: {e}")
+        return False
+    finally:
+        conn.close()
 
 
 
@@ -277,6 +315,7 @@ def response():
         print("error:", e)
         return jsonify({"error": str(e)}), 500
             
+
 
 if __name__ == "__main__":
     #initialize_db() --> we can initialize manually since we only have to do this once

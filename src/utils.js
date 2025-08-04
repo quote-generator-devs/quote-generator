@@ -182,3 +182,28 @@ export async function getSavedQuotes()
 
 }
 
+
+export async function removeQuote(data)
+{
+    const token= localStorage.getItem('accessToken');
+    const response= await fetch(`http://localhost:5001/quotes/remove`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        // The fix is here: we now send the unique quote ID
+        body: JSON.stringify({
+            id: data.id
+        })
+    });
+
+
+    if(response.ok)
+    {
+        console.log("Quote removed.");
+    }
+    else{
+        console.log("Failed to remove Quote.");
+    }
+}
