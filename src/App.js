@@ -268,6 +268,19 @@ function Profile(){
 
   const navigate = useNavigate(); // Used for redirecting
 
+  //Function to handle profile picture change
+  function handleProfilePicChange(event) {
+  const file = event.target.files[0];
+  if (file) 
+  {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      alert("Still need to implement getting the image to the backend.");
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -323,8 +336,28 @@ function Profile(){
   return (
     <div class = "profile">
       <h1> Profile </h1>
-      <div class = "profile-container">
-        <img src = "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=" alt = "Profile picture" class = "profile-pic"></img>
+      <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
+        <img
+          src={profileData.profilePicUrl || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
+          alt="Profile picture"
+          class="profile-pic"
+          style={{ width: "200px", height: "200px", borderRadius: "50%" }}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          id="profilePicInput"
+          onChange={handleProfilePicChange}
+          ref={input => (window.profilePicInput = input)}
+        />
+        <button class="upload-profile-pic-btn"
+          type="button"
+          onClick={() => window.profilePicInput && window.profilePicInput.click()}
+          aria-label="Upload Profile Picture"
+        >
+          +
+        </button>
       </div>
       <div class = "info">
         <div class = "username-follow">
