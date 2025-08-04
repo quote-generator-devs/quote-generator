@@ -17,6 +17,7 @@ export async function searchQuotes(query) {
 
     const aiQuery = JSON.parse(`{"message": "${!query.trim() ? "random" : query}"}`)
 
+       
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
@@ -37,6 +38,7 @@ export async function searchQuotes(query) {
         const generated = await generateQuotes(aiQuery);
         return generated.quotes;
     }
+     
 }
 
 
