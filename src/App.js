@@ -5,9 +5,6 @@ import { HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate } from
 import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-
-
-
 function App() {
   return (
     <AuthProvider>
@@ -283,7 +280,7 @@ function AboutUs() {
 function Profile(){
   const { isAuthenticated, user } = useAuth();
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Used for redirecting
 
 
   //Function to handle profile picture change
@@ -320,56 +317,17 @@ function Profile(){
     }
 }
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
+  // CONDITIONAL RENDERING
 
-        // If there's no token, the user is not logged in.
-        if (!token) {
-          setError('No authorization token found. Please log in.');
-          setIsLoading(false);
-          // Redirect to login page after a delay
-          setTimeout(() => navigate('/login'), 2000);
-          return;
-        }
-
-        const response = await fetch('http://localhost:5001/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include the JWT in the Authorization header
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile data. Your session may have expired.'); // Returns error 401 or 422
-        }
-
-        const data = await response.json();
-        setProfileData(data);
-
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-        // Clear invalid token from storage
-        localStorage.removeItem('accessToken');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  // Show a loading message while fetching data
-  if (isLoading) {
-    return <div className="profile"><h1>Loading Profile...</h1></div>;
+  // logged in, but still loading
+  if (isAuthenticated && !user) {
+    return <div className="profile"><h1>Loading profile...</h1></div>;
   }
 
-  // Show an error message if fetching data failed
-  if (error) {
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>{error}</p></div>;
+  // not logged in, redirect to login
+  if (!isAuthenticated) {
+    setTimeout(() => navigate('/login'), 2000);
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
   }
 
   return (
@@ -377,7 +335,7 @@ function Profile(){
       <h1> Profile </h1>
       <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
         <img
-          src={profileData.profilePicUrl ? `http://localhost:5001${profileData.profilePicUrl}`
+          src={user.profilePicUrl ? `http://localhost:5001${user.profilePicUrl}`
           : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
           alt="Profile picture"
           class="profile-pic"
@@ -418,8 +376,6 @@ function Profile(){
     </div>
   );
 }
-
-
 
 
 function QuotesFound() {
