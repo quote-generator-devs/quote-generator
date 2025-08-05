@@ -235,11 +235,11 @@ function AboutUs() {
             <p>Bhavana Dakshinamoorthy</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Noor Diab" class="noor" />
+            <img src="/images/Noor.jpg" alt="Image of Noor Diab" class="noor" />
             <p>Noor Diab</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Daniel Lawler"  class="danny"/>
+            <img src="/images/Danny.jpg" alt="Image of Daniel Lawler"  class="danny"/>
             <p>Daniel Lawler</p>
           </div>
           <div class="dev">
@@ -247,7 +247,7 @@ function AboutUs() {
             <p>Kaden Spencer</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Shane Thoma"  class="shane"/>
+            <img src="/images/Shane.jpg" alt="Image of Shane Thoma"  class="shane"/>
             <p>Shane Thoma</p>
           </div>
         </div>
