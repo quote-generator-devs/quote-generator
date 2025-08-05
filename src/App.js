@@ -372,12 +372,12 @@ function Profile(){
 }
 
 
-
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [savedQuoteIds, setSavedQuoteIds] = useState(new Set())
+
   // Hook to read URL query parameters
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
@@ -396,10 +396,11 @@ function QuotesFound() {
         }
 
         const savedQuotes= await getSavedQuotes();
+        
         const ids= new Set(savedQuotes.map(quote => quote.id ));
+
         setSavedQuoteIds(ids);
-
-
+        
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
         console.error(err);
@@ -414,21 +415,55 @@ function QuotesFound() {
 
   const handleSave = async (quote) => {
   try {
-    await saveQuote(quote);
-    setSavedQuoteIds(prev => new Set(prev).add(quote.id));
+    const savedQuote= await saveQuote({content: quote.content, author: {name: quote.author.name}});
+
+    setSavedQuoteIds(prev => new Set(prev).add(savedQuote.id));
+
   } catch (err) {
     console.error("Failed to save quote:", err);
   }
 };
 
+const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const results = await getSavedQuotes();
+        console.log("Quotes from API:", results);
+        if (results.length === 0) {
+          setError("No Quotes Saved Yet.");
+        } else {
+          setQuotes(results);
+        }
+      } catch (err) {
+        setError("Could not fetch quotes. Please try again later.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+  useEffect(() => {
+    fetchData();
+    }, []);
+
+
+  
+
 const handleRemove = async (quote) => {
   try {
+
+    
     await removeQuote(quote);
+    console.log(quote.id)
+    
     setSavedQuoteIds(prev => {
       const newSet = new Set(prev);
       newSet.delete(quote.id);
       return newSet;
     });
+
+
   } catch (err) {
     console.error("Failed to remove quote:", err);
   }
@@ -535,6 +570,7 @@ function SavedQuotes(){
 
    const handleRemoveQuote = async (quote) => {
     await removeQuote(quote);
+    
     fetchData(); // Re-fetch the quotes to update the UI
   };
 
