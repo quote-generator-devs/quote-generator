@@ -281,6 +281,12 @@ input {
     
 }
 
+.dev > .noor, .shane, .danny{
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
 
 .dev_description>h2 {
     text-align:center;
