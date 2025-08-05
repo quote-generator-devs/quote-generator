@@ -416,7 +416,17 @@ function QuotesFound() {
   const handleSave = async (quote) => {
   try {
     const savedQuote= await saveQuote({content: quote.content, author: {name: quote.author.name}});
+    // 2. Update the 'quotes' state with the new ID.
+    setQuotes(prevQuotes =>
+      prevQuotes.map(q =>
+        // Find the original quote and replace its ID.
+        q.content === quote.content && q.author.name === quote.author.name
+          ? { ...q, id: savedQuote.id }
+          : q
+      )
+    );
 
+    // 3. Add the new ID to the 'savedQuoteIds' set for UI updates.
     setSavedQuoteIds(prev => new Set(prev).add(savedQuote.id));
 
   } catch (err) {
