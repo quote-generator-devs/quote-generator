@@ -4,6 +4,9 @@ import React, {useState, useEffect} from 'react';
 import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
 import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
 
+
+
+
 function App() {
   return (
     <HashRouter>
@@ -402,6 +405,8 @@ function Profile(){
 }
 
 
+
+
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -433,6 +438,9 @@ function QuotesFound() {
 
     fetchData();
   }, [query]); // The effect re-runs if the 'query' in the URL changes
+
+
+
 
 
   return (
