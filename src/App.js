@@ -5,6 +5,9 @@ import { HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate } from
 import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
+
+
+
 function App() {
   return (
     <AuthProvider>
@@ -251,11 +254,11 @@ function AboutUs() {
             <p>Bhavana Dakshinamoorthy</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Noor Diab" class="noor" />
+            <img src="/images/Noor.jpg" alt="Image of Noor Diab" class="noor" />
             <p>Noor Diab</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Daniel Lawler"  class="danny"/>
+            <img src="/images/Danny.jpg" alt="Image of Daniel Lawler"  class="danny"/>
             <p>Daniel Lawler</p>
           </div>
           <div class="dev">
@@ -263,7 +266,7 @@ function AboutUs() {
             <p>Kaden Spencer</p>
           </div>
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Shane Thoma"  class="shane"/>
+            <img src="/images/Shane.jpg" alt="Image of Shane Thoma"  class="shane"/>
             <p>Shane Thoma</p>
           </div>
         </div>
@@ -285,26 +288,88 @@ function Profile(){
 
   //Function to handle profile picture change
   function handleProfilePicChange(event) {
-  const file = event.target.files[0];
-  if (file) 
-  {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      alert("Still need to implement getting the image to the backend.");
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('profile_pic', file);
+
+      const token = localStorage.getItem('accessToken');
+
+      fetch('http://localhost:5001/api/upload_profile_pic', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}` // Only add auth header if needed
+          // Do NOT set 'Content-Type' header; browser sets it for FormData
+        },
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.profilePicUrl) {
+            setProfileData(prev => ({
+              ...prev,
+              profilePicUrl: data.profilePicUrl
+            }));
+          }
+          alert('Profile picture uploaded!');
+        })
+        .catch(error => {
+          alert('Failed to upload profile picture.');
+          console.error(error);
+        });
+    }
 }
 
-  // logged in, but still loading
-  if (isAuthenticated && !user) {
-    return <div className="profile"><h1>Loading profile...</h1></div>;
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+
+        // If there's no token, the user is not logged in.
+        if (!token) {
+          setError('No authorization token found. Please log in.');
+          setIsLoading(false);
+          // Redirect to login page after a delay
+          setTimeout(() => navigate('/login'), 2000);
+          return;
+        }
+
+        const response = await fetch('http://localhost:5001/api/profile', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the JWT in the Authorization header
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data. Your session may have expired.'); // Returns error 401 or 422
+        }
+
+        const data = await response.json();
+        setProfileData(data);
+
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+        // Clear invalid token from storage
+        localStorage.removeItem('accessToken');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Show a loading message while fetching data
+  if (isLoading) {
+    return <div className="profile"><h1>Loading Profile...</h1></div>;
   }
 
-  // not logged in, redirect to login
-  if (!isAuthenticated) {
-    setTimeout(() => navigate('/login'), 2000);
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
+  // Show an error message if fetching data failed
+  if (error) {
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>{error}</p></div>;
   }
 
   return (
@@ -312,7 +377,8 @@ function Profile(){
       <h1> Profile </h1>
       <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
         <img
-          src={user.profilePicUrl || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
+          src={profileData.profilePicUrl ? `http://localhost:5001${profileData.profilePicUrl}`
+          : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
           alt="Profile picture"
           class="profile-pic"
           style={{ width: "200px", height: "200px", borderRadius: "50%" }}
@@ -354,6 +420,8 @@ function Profile(){
 }
 
 
+
+
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -385,6 +453,9 @@ function QuotesFound() {
 
     fetchData();
   }, [query]); // The effect re-runs if the 'query' in the URL changes
+
+
+
 
 
   return (
