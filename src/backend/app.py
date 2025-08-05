@@ -263,6 +263,18 @@ def remove_quotes():
     else:
         return jsonify({"error": "Failed to remove quote"}), 500
 
+# Helper function to remove a profile picture for a user
+def remove_profile_pic(user_id):
+    """
+    Sets the profile_pic_url column to NULL for the given user_id.
+    """
+    conn = get_db_connection()
+    conn.execute("UPDATE USER SET profile_pic_url = NULL WHERE ID = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+# Call remove_profile_pic once at startup, then remove or comment it out
+# remove_profile_pic(19);
 
 def remove_quote_for_user(user_id, quoteId):
     conn = get_db_connection()
