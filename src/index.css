@@ -581,13 +581,12 @@ input {
     cursor:pointer;
 }
 
-/**Saving Quotes**/
-.saveQuotesBtn {
+/**Saving and Removing Quotes**/
+.saveQuotesBtn, .removeQuotesBtn {
   position:absolute;
   align-self:flex-start;
   margin-top:100px;
   padding: 8px 8px;
-  background-color:cornsilk;
   border-radius: 10px;
   cursor:pointer;
   color:#8a8989;
@@ -596,7 +595,16 @@ input {
 
 }
 
+.saveQuotesBtn{
+    background-color:cornsilk;
+}
 
+.removeQuotesBtn{
+    background-color: rgb(249, 198, 231);
+}
+
+
+/**Adjusting for different screen sizes **/
 @media only screen and (min-width: 992px) {
     body { 
         font-size: 18px; 

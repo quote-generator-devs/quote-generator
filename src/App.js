@@ -372,11 +372,12 @@ function Profile(){
 }
 
 
+
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [savedQuoteIds, setSavedQuoteIds] = useState(new Set())
   // Hook to read URL query parameters
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
@@ -393,6 +394,12 @@ function QuotesFound() {
         } else {
           setQuotes(results);
         }
+
+        const savedQuotes= await getSavedQuotes();
+        const ids= new Set(savedQuotes.map(quote => quote.id ));
+        setSavedQuoteIds(ids);
+
+
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
         console.error(err);
@@ -405,7 +412,27 @@ function QuotesFound() {
   }, [query]); // The effect re-runs if the 'query' in the URL changes
 
 
+  const handleSave = async (quote) => {
+  try {
+    await saveQuote(quote);
+    setSavedQuoteIds(prev => new Set(prev).add(quote.id));
+  } catch (err) {
+    console.error("Failed to save quote:", err);
+  }
+};
 
+const handleRemove = async (quote) => {
+  try {
+    await removeQuote(quote);
+    setSavedQuoteIds(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(quote.id);
+      return newSet;
+    });
+  } catch (err) {
+    console.error("Failed to remove quote:", err);
+  }
+};
 
 
   return (
@@ -422,9 +449,30 @@ function QuotesFound() {
               <li key={quote.id}>
                 <blockquote>"{quote.content}"</blockquote>
                 <cite>- {quote.author.name}</cite>
+
+                {/*
                 <button className="saveQuotesBtn"
                 onClick= {()=> saveQuote({content: quote.content, author: {name: quote.author.name}})}
                 >Save</button>
+                *}
+                {/*
+                <HeartButton 
+                  quote= {quote}
+                  onToggleSave = {(isNowSaved) => handleSaveToggle(quote, isNowSaved)}
+                />
+                */}
+
+              {savedQuoteIds.has(quote.id) ? (
+              <button 
+                className="removeQuotesBtn"
+                onClick={() => handleRemove(quote)}
+               > Remove </button>) : (
+              <button 
+                className="saveQuotesBtn"
+                onClick={() => handleSave(quote)}
+              >Save</button>
+              )}
+
               </li>
             ))}
           </ul>
@@ -451,6 +499,8 @@ function Activity() {
     </div>
   );
 }
+
+
 
 function SavedQuotes(){
   const [quotes, setQuotes]= useState([]);
@@ -481,11 +531,14 @@ function SavedQuotes(){
     fetchData();
     }, []);
   
+
+
    const handleRemoveQuote = async (quote) => {
     await removeQuote(quote);
     fetchData(); // Re-fetch the quotes to update the UI
   };
-  
+
+
   return (
     <div className = "saved-quotes-container">
       <div className = "saved-quotes-header">
