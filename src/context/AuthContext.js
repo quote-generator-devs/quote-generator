@@ -43,6 +43,13 @@ export const AuthProvider = ({children}) => {
         fetchUser();
     }, [token]);
 
+    const updateUserData = (newUserData) => {
+    setUser(currentUser => ({
+      ...currentUser,
+      ...newUserData
+    }));
+  };
+
     // called from login function
     const login = (newToken, userData) => {
         setToken(newToken);
@@ -56,10 +63,12 @@ export const AuthProvider = ({children}) => {
     }
 
     const value = {
-        isAuthenticated,
+        token,
+        isAuthenticated: !!token,
         user,
         login,
-        logout
+        logout,
+        updateUserData
     }
 
     return (

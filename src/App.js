@@ -278,7 +278,7 @@ function AboutUs() {
 }
 
 function Profile(){
-  const { isAuthenticated, user } = useAuth();
+  const { user, token, updateUserData, isAuthenticated, logout } = useAuth();
 
   const navigate = useNavigate(); // Used for redirecting
 
@@ -289,8 +289,6 @@ function Profile(){
     if (file) {
       const formData = new FormData();
       formData.append('profile_pic', file);
-
-      const token = localStorage.getItem('accessToken');
 
       fetch('http://localhost:5001/api/upload_profile_pic', {
         method: 'POST',
@@ -303,19 +301,16 @@ function Profile(){
         .then(response => response.json())
         .then(data => {
           if (data.profilePicUrl) {
-            setProfileData(prev => ({
-              ...prev,
-              profilePicUrl: data.profilePicUrl
-            }));
+            updateUserData({profilePicUrl: data.profilePicUrl});
+            alert('Profile picture uploaded!');
           }
-          alert('Profile picture uploaded!');
         })
         .catch(error => {
           alert('Failed to upload profile picture.');
           console.error(error);
         });
     }
-}
+  }
 
   // CONDITIONAL RENDERING
 
@@ -369,8 +364,7 @@ function Profile(){
         <div class= "profilePgBtns">
           <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
           <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
-          <NavLink className="logOutBtn" to = "/login" onClick = {() => 
-            localStorage.removeItem('accessToken')}>Log Out</NavLink>
+          <NavLink className="logOutBtn" to = "/login" onClick = {logout}>Log Out</NavLink>
         </div>
       </div>
     </div>
