@@ -1,30 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
+import { HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate } from 'react-router-dom'; // used for navigation between pages
 import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function App() {
   return (
-    <HashRouter>
-      <NavBar />
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/search" element={<QuotesFound />} />
-        <Route path="/about-us" exact element={<AboutUs />} />
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/signup" exact element={<SignUp />} />
-        <Route path = "/profile" exact element = {<Profile />} />
-        <Route path = "/activity" exact element = {<Activity />} />
-        <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
-        <Route path = "/feed" exact element = {<Feed />} />
-        <Route path = "/theme1" exact element = {<Theme1 />} />
-        <Route path = "/theme2" exact element = {<Theme2 />} />
-        <Route path = "/theme3" exact element = {<Theme3 />} />
-        <Route path = "/theme4" exact element = {<Theme4 />} />
-      </Routes>
-    </HashRouter>
-  )
+    <AuthProvider>
+      <HashRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/search" element={<QuotesFound />} />
+          <Route path="/about-us" exact element={<AboutUs />} />
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/signup" exact element={<SignUp />} />
+          <Route path = "/profile" exact element = {<Profile />} />
+          <Route path = "/activity" exact element = {<Activity />} />
+          <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
+          <Route path = "/feed" exact element = {<Feed />} />
+          <Route path = "/theme1" exact element = {<Theme1 />} />
+          <Route path = "/theme2" exact element = {<Theme2 />} />
+          <Route path = "/theme3" exact element = {<Theme3 />} />
+          <Route path = "/theme4" exact element = {<Theme4 />} />
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
+  );
 }
 
 
@@ -46,6 +49,8 @@ function NavBar() {
 }
 
 function Home() {
+  const { isAuthenticated, logout, user } = useAuth();
+
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
@@ -65,8 +70,17 @@ function Home() {
         </div>
 
         <div class="homeBtns">
-          <NavLink className="loginBtn" to="/login">Login</NavLink>
-          <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+          {isAuthenticated && user ? (
+            <>
+              <p className="welcome_msg">Welcome, {user.username}!</p>
+              <button onClick={logout} className="logOutBtn">Log Out</button>
+            </>
+          ) : (
+            <>
+              <NavLink className="loginBtn" to="/login">Login</NavLink>
+              <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+            </>
+          )}
         </div>
       </div>
 
@@ -84,6 +98,7 @@ function Home() {
 }
 
 function Login() {
+    const { login } = useAuth();
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -108,6 +123,7 @@ function Login() {
       if(result.status === "login")
       {
         setError(null);
+        login(result.access_token, result.user.username);
         navigate(`/profile`);
       }
       else
@@ -262,11 +278,10 @@ function AboutUs() {
 }
 
 function Profile(){
-  const [profileData, setProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { isAuthenticated, user } = useAuth();
 
-  const navigate = useNavigate(); // Used for redirecting
+  const navigate = useNavigate();
+
 
   //Function to handle profile picture change
   function handleProfilePicChange(event) {
@@ -281,56 +296,15 @@ function Profile(){
   }
 }
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
-
-        // If there's no token, the user is not logged in.
-        if (!token) {
-          setError('No authorization token found. Please log in.');
-          setIsLoading(false);
-          // Redirect to login page after a delay
-          setTimeout(() => navigate('/login'), 2000);
-          return;
-        }
-
-        const response = await fetch('http://localhost:5001/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include the JWT in the Authorization header
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile data. Your session may have expired.'); // Returns error 401 or 422
-        }
-
-        const data = await response.json();
-        setProfileData(data);
-
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-        // Clear invalid token from storage
-        localStorage.removeItem('accessToken');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  // Show a loading message while fetching data
-  if (isLoading) {
-    return <div className="profile"><h1>Loading Profile...</h1></div>;
+  // logged in, but still loading
+  if (isAuthenticated && !user) {
+    return <div className="profile"><h1>Loading profile...</h1></div>;
   }
 
-  // Show an error message if fetching data failed
-  if (error) {
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>{error}</p></div>;
+  // not logged in, redirect to login
+  if (!isAuthenticated) {
+    setTimeout(() => navigate('/login'), 2000);
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
   }
 
   return (
@@ -338,7 +312,7 @@ function Profile(){
       <h1> Profile </h1>
       <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
         <img
-          src={profileData.profilePicUrl || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
+          src={user.profilePicUrl || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
           alt="Profile picture"
           class="profile-pic"
           style={{ width: "200px", height: "200px", borderRadius: "50%" }}
@@ -361,12 +335,12 @@ function Profile(){
       </div>
       <div class = "info">
         <div class = "username-follow">
-          <p class = "profile-element"> @{profileData.username} </p>
+          <p class = "profile-element"> @{user.username} </p>
           <span class = "separator">|</span>
           <button class = "follow-button">Follow</button>
         </div>
-        <p class = "profile-element"><b>Name:</b> {profileData.name || 'Not set'}</p>
-        <p class = "profile-element"><b>Bio:</b> {profileData.bio || 'No bio yet.'}</p>
+        <p class = "profile-element"><b>Name:</b> {user.name || 'Not set'}</p>
+        <p class = "profile-element"><b>Bio:</b> {user.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
         <div class= "profilePgBtns">
           <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>

@@ -134,6 +134,23 @@ body{
  width: 100%;
 }
 
+.welcome_msg {
+    color: #555;
+    margin-top:20px;
+    margin-left: 100px;
+    margin-bottom: 0px;
+    font-size: 30px;
+}
+
+.homeBtns .logOutBtn {
+    margin-left: 100px;
+    padding: 30px 30px;
+    font-size: 30px;
+    background-color:cornsilk;
+    border:none;
+    border-radius: 30px;
+}
+
 /* Login and Sign Up Page Styling */
 
 .container, .login_header, .signup_header{

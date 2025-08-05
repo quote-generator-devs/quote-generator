@@ -108,7 +108,7 @@ def login():
         # login handling
         user_id = user_row['ID']
         access_token = create_access_token(identity=str(user_id))
-        return jsonify(access_token=access_token, message="Login successful!", id="success")
+        return jsonify({"access_token": access_token, "user": {"username": user_row['username']}, "message": "Login successful!", "id": "success"})
     else:
         # AUTHENTICATION FAILED
         return jsonify(error="Invalid username or password", id="failure"), 401
