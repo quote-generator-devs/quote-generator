@@ -55,6 +55,16 @@ def initialize_db():
                 PASSWORD TEXT NOT NULL);
     ''')
 
+    # Add profile_pic_url column if it doesn't exist
+    try:
+        connect.execute("ALTER TABLE USER ADD COLUMN profile_pic_url TEXT")
+        print("Added profile_pic_url column to USER table.")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("profile_pic_url column already exists.")
+        else:
+            print("Error adding column:", e)
+
     #CREATE A SAVED QUOTES TABLE
     connect.execute('''CREATE TABLE IF NOT EXISTS SAVED_QUOTES (
                     ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -116,20 +126,48 @@ def login():
 
 @app.route('/api/profile', methods=['GET'])
 @jwt_required() # This decorator protects the route
+
 def get_profile():
-    """Protected route that returns the logged-in user's data."""
-    # get_jwt_identity() returns the identity we set in create_access_token()
     current_user_id = get_jwt_identity()
-    
     conn = get_db_connection()
-    user_row = conn.execute('SELECT ID, USERNAME FROM user WHERE ID = ?', (current_user_id,)).fetchone()
+    user_row = conn.execute('SELECT ID, USERNAME, profile_pic_url FROM user WHERE ID = ?', (current_user_id,)).fetchone()
     conn.close()
 
     if not user_row:
         return jsonify({"error": "User not found"}), 404
-        
-    # Return the user's data (without the password hash!)
-    return jsonify(id=user_row['ID'], username=user_row['USERNAME'])
+
+    return jsonify(
+        id=user_row['ID'],
+        username=user_row['USERNAME'],
+        profilePicUrl=user_row['profile_pic_url']  # Add this line
+    )
+
+@app.route('/api/upload_profile_pic', methods=['POST'])
+@jwt_required()
+def upload_profile_pic():
+    if 'profile_pic' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['profile_pic']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    # Ensure the directory exists
+    save_dir = os.path.join('static', 'profile_pics')
+    os.makedirs(save_dir, exist_ok=True)
+
+    file_path = os.path.join(save_dir, file.filename)
+    file.save(file_path)
+
+    # Update the user's profile_pic_url in the database
+    user_id = get_jwt_identity()
+    profile_pic_url = f"/static/profile_pics/{file.filename}"
+
+    conn = get_db_connection()
+    conn.execute("UPDATE USER SET profile_pic_url = ? WHERE ID = ?", (profile_pic_url, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True, 'profilePicUrl': profile_pic_url})
 
 @app.route('/quotes/save', methods=['POST'])
 @jwt_required()
@@ -243,7 +281,7 @@ def remove_quote_for_user(user_id, quoteId):
     finally:
         conn.close()
 
-
+import os
 
 @app.route('/search/response', methods=['GET','POST'])
 def response():

@@ -270,15 +270,36 @@ function Profile(){
 
   //Function to handle profile picture change
   function handleProfilePicChange(event) {
-  const file = event.target.files[0];
-  if (file) 
-  {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      alert("Still need to implement getting the image to the backend.");
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('profile_pic', file);
+
+      const token = localStorage.getItem('accessToken');
+
+      fetch('http://localhost:5001/api/upload_profile_pic', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}` // Only add auth header if needed
+          // Do NOT set 'Content-Type' header; browser sets it for FormData
+        },
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.profilePicUrl) {
+            setProfileData(prev => ({
+              ...prev,
+              profilePicUrl: data.profilePicUrl
+            }));
+          }
+          alert('Profile picture uploaded!');
+        })
+        .catch(error => {
+          alert('Failed to upload profile picture.');
+          console.error(error);
+        });
+    }
 }
 
   useEffect(() => {
@@ -338,7 +359,8 @@ function Profile(){
       <h1> Profile </h1>
       <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
         <img
-          src={profileData.profilePicUrl || "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
+          src={profileData.profilePicUrl ? `http://localhost:5001${profileData.profilePicUrl}`
+          : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
           alt="Profile picture"
           class="profile-pic"
           style={{ width: "200px", height: "200px", borderRadius: "50%" }}
