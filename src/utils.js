@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 
-
 /**
  * Searches for quotes using the Quotable API.
  * @param {string} query - The term to search for (e.g., 'wisdom', 'technology').
@@ -109,7 +108,6 @@ export async function validateUser(data) {
     });
 
     const result = await response.json();
-    console.log(result);
 
     if(result.id === "failure")
     {
@@ -118,8 +116,7 @@ export async function validateUser(data) {
 
     else
     {
-        localStorage.setItem('accessToken', result.access_token);
-        return { status : "login", token: result.access_token };
+        return { status : "login", access_token: result.access_token, user: result.user };
     }
 }
 
@@ -150,9 +147,12 @@ export async function saveQuote(data){
         })
     });
 
+    //obtain the savedData to send the ID back to App.js
+    const savedData = await response.json();
     if(response.ok)
     {
         console.log("Quote saved.");
+        return savedData;
     }
     else{
         console.log("Failed to save Quote.");

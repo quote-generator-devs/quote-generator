@@ -1,33 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import {HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate} from 'react-router-dom'; // used for navigation between pages
+import { HashRouter, Routes, Route, NavLink, useSearchParams, useNavigate } from 'react-router-dom'; // used for navigation between pages
 import { searchQuotes, addUser, validateUser, getUser, saveQuote, getSavedQuotes, removeQuote } from './utils';
-
-
-
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function App() {
   return (
-    <HashRouter>
-      <NavBar />
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/search" element={<QuotesFound />} />
-        <Route path="/about-us" exact element={<AboutUs />} />
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/signup" exact element={<SignUp />} />
-        <Route path = "/profile" exact element = {<Profile />} />
-        <Route path = "/activity" exact element = {<Activity />} />
-        <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
-        <Route path = "/feed" exact element = {<Feed />} />
-        <Route path = "/theme1" exact element = {<Theme1 />} />
-        <Route path = "/theme2" exact element = {<Theme2 />} />
-        <Route path = "/theme3" exact element = {<Theme3 />} />
-        <Route path = "/theme4" exact element = {<Theme4 />} />
-      </Routes>
-    </HashRouter>
-  )
+    <AuthProvider>
+      <HashRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/search" element={<QuotesFound />} />
+          <Route path="/about-us" exact element={<AboutUs />} />
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/signup" exact element={<SignUp />} />
+          <Route path = "/profile" exact element = {<Profile />} />
+          <Route path = "/activity" exact element = {<Activity />} />
+          <Route path = "/saved-quotes" exact element = {<SavedQuotes />} />
+          <Route path = "/feed" exact element = {<Feed />} />
+          <Route path = "/theme1" exact element = {<Theme1 />} />
+          <Route path = "/theme2" exact element = {<Theme2 />} />
+          <Route path = "/theme3" exact element = {<Theme3 />} />
+          <Route path = "/theme4" exact element = {<Theme4 />} />
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
+  );
 }
 
 
@@ -49,6 +49,8 @@ function NavBar() {
 }
 
 function Home() {
+  const { isAuthenticated, logout, user } = useAuth();
+
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
@@ -68,8 +70,17 @@ function Home() {
         </div>
 
         <div class="homeBtns">
-          <NavLink className="loginBtn" to="/login">Login</NavLink>
-          <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+          {isAuthenticated && user ? (
+            <>
+              <p className="welcome_msg">Welcome, {user.username}!</p>
+              <button onClick={logout} className="logOutBtn">Log Out</button>
+            </>
+          ) : (
+            <>
+              <NavLink className="loginBtn" to="/login">Login</NavLink>
+              <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+            </>
+          )}
         </div>
       </div>
 
@@ -87,6 +98,7 @@ function Home() {
 }
 
 function Login() {
+    const { login } = useAuth();
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -111,6 +123,7 @@ function Login() {
       if(result.status === "login")
       {
         setError(null);
+        login(result.access_token, result.user.username);
         navigate(`/profile`);
       }
       else
@@ -266,11 +279,10 @@ function AboutUs() {
 }
 
 function Profile(){
-  const [profileData, setProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user, token, updateUserData, isAuthenticated, logout } = useAuth();
 
   const navigate = useNavigate(); // Used for redirecting
+
 
   //Function to handle profile picture change
   function handleProfilePicChange(event) {
@@ -278,8 +290,6 @@ function Profile(){
     if (file) {
       const formData = new FormData();
       formData.append('profile_pic', file);
-
-      const token = localStorage.getItem('accessToken');
 
       fetch('http://localhost:5001/api/upload_profile_pic', {
         method: 'POST',
@@ -292,70 +302,28 @@ function Profile(){
         .then(response => response.json())
         .then(data => {
           if (data.profilePicUrl) {
-            setProfileData(prev => ({
-              ...prev,
-              profilePicUrl: data.profilePicUrl
-            }));
+            updateUserData({profilePicUrl: data.profilePicUrl});
+            alert('Profile picture uploaded!');
           }
-          alert('Profile picture uploaded!');
         })
         .catch(error => {
           alert('Failed to upload profile picture.');
           console.error(error);
         });
     }
-}
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
-
-        // If there's no token, the user is not logged in.
-        if (!token) {
-          setError('No authorization token found. Please log in.');
-          setIsLoading(false);
-          // Redirect to login page after a delay
-          setTimeout(() => navigate('/login'), 2000);
-          return;
-        }
-
-        const response = await fetch('http://localhost:5001/api/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include the JWT in the Authorization header
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile data. Your session may have expired.'); // Returns error 401 or 422
-        }
-
-        const data = await response.json();
-        setProfileData(data);
-
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-        // Clear invalid token from storage
-        localStorage.removeItem('accessToken');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  // Show a loading message while fetching data
-  if (isLoading) {
-    return <div className="profile"><h1>Loading Profile...</h1></div>;
   }
 
-  // Show an error message if fetching data failed
-  if (error) {
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>{error}</p></div>;
+  // CONDITIONAL RENDERING
+
+  // logged in, but still loading
+  if (isAuthenticated && !user) {
+    return <div className="profile"><h1>Loading profile...</h1></div>;
+  }
+
+  // not logged in, redirect to login
+  if (!isAuthenticated) {
+    setTimeout(() => navigate('/login'), 2000);
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
   }
 
   return (
@@ -363,7 +331,7 @@ function Profile(){
       <h1> Profile </h1>
       <div class="profile-container" style={{ position: "relative", display: "inline-block" }}>
         <img
-          src={profileData.profilePicUrl ? `http://localhost:5001${profileData.profilePicUrl}`
+          src={user.profilePicUrl ? `http://localhost:5001${user.profilePicUrl}`
           : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="}
           alt="Profile picture"
           class="profile-pic"
@@ -387,18 +355,17 @@ function Profile(){
       </div>
       <div class = "info">
         <div class = "username-follow">
-          <p class = "profile-element"> @{profileData.username} </p>
+          <p class = "profile-element"> @{user.username} </p>
           <span class = "separator">|</span>
           <button class = "follow-button">Follow</button>
         </div>
-        <p class = "profile-element"><b>Name:</b> {profileData.name || 'Not set'}</p>
-        <p class = "profile-element"><b>Bio:</b> {profileData.bio || 'No bio yet.'}</p>
+        <p class = "profile-element"><b>Name:</b> {user.name || 'Not set'}</p>
+        <p class = "profile-element"><b>Bio:</b> {user.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
         <div class= "profilePgBtns">
           <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
           <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
-          <NavLink className="logOutBtn" to = "/login" onClick = {() => 
-            localStorage.removeItem('accessToken')}>Log Out</NavLink>
+          <NavLink className="logOutBtn" to = "/login" onClick = {logout}>Log Out</NavLink>
         </div>
       </div>
     </div>
@@ -406,16 +373,17 @@ function Profile(){
 }
 
 
-
-
 function QuotesFound() {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedQuoteIds, setSavedQuoteIds] = useState(new Map());
 
   // Hook to read URL query parameters
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
+
+
 
   // useEffect runs when the component mounts or when the 'query' changes
   useEffect(() => {
@@ -424,11 +392,35 @@ function QuotesFound() {
       setError(null);
       try {
         const results = await searchQuotes(query);
+        console.log("Search results:", results.map(q => q.id)); // Log search result IDs
+
+
         if (results.length === 0) {
           setError("No quotes found for that term. Try another!");
         } else {
           setQuotes(results);
         }
+
+        //obtain the saved Quotes
+        const savedQuotes= await getSavedQuotes();
+        console.log("Saved quotes:", savedQuotes.map(q => q.id)); // Log saved quote IDs
+
+        // Build a map: key = content|||author, value = saved quote object
+        const savedQuoteMap = new Map();
+        savedQuotes.forEach(q => {
+          // Try to normalize both content and author.name
+            //considers both ways of accessing the content + author
+            const key = normalizeKey(q);
+
+          //Creates a map of the key -> quote 
+          savedQuoteMap.set(key, q);
+        });
+
+
+        //save them into savedQuoteIds
+        setSavedQuoteIds(savedQuoteMap);
+        
+        
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
         console.error(err);
@@ -439,8 +431,72 @@ function QuotesFound() {
 
     fetchData();
   }, [query]); // The effect re-runs if the 'query' in the URL changes
+  
 
 
+
+
+  const handleSave = async (quote) => {
+  try {
+    console.log("Attempting to save:", quote);
+
+
+    const savedQuote = await saveQuote({content: quote.content, author: {name: quote.author.name}});
+    
+    console.log("Saved quote object:", savedQuote);
+
+
+    //by returning the savedQuote object, we should also return its ID
+    if(savedQuote && savedQuote.id)
+    {
+
+      //update the map with the savedQuote object
+      //this is how the map will look like:
+      //"quote content here|||Author Name": { id: 43, content: "...", author: { name: "..." }, ... },
+      setSavedQuoteIds(prevMap => {
+        const newMap = new Map(prevMap);
+        const key = normalizeKey(quote);
+
+        //update with the new savedQuote object
+        newMap.set(key, savedQuote);
+        return newMap;
+      });
+
+    }
+
+  } catch (err) {
+    console.error("Failed to save quote:", err);
+  }
+};
+
+
+
+const handleRemove = async (quote) => {
+  try {
+
+    await removeQuote(quote);
+    console.log(quote.id)
+    
+    setSavedQuoteIds(prevMap => {
+      const newMap = new Map(prevMap);
+
+      // Normalize for both possible structures
+      const key = normalizeKey(quote);;
+      newMap.delete(key);
+      return newMap;
+    });
+
+
+  } catch (err) {
+    console.error("Failed to remove quote:", err);
+  }
+};
+
+const normalizeKey = (quote) => {
+  const content = (quote.content || quote.quote || '').trim();
+  const author = (quote.author?.name || quote.author || '').trim();
+  return `${content}|||${author}`;
+};
 
 
 
@@ -454,15 +510,28 @@ function QuotesFound() {
         {error && <p className="error-message">{error}</p>}
         {quotes.length > 0 && (
           <ul>
-            {quotes.map((quote) => (
+            {quotes.map((quote) => {
+            const key = normalizeKey(quote);
+            const savedQuote = savedQuoteIds.get(key); // savedQuoteIds is now a Map
+
+            return (
               <li key={quote.id}>
                 <blockquote>"{quote.content}"</blockquote>
                 <cite>- {quote.author.name}</cite>
-                <button className="saveQuotesBtn"
-                onClick= {()=> saveQuote({content: quote.content, author: {name: quote.author.name}})}
-                >Save</button>
+                {savedQuote ? (
+                  <button
+                    className="removeQuotesBtn"
+                    onClick={() => handleRemove(savedQuote)}
+                  >Remove</button>
+                ) : (
+                  <button
+                    className="saveQuotesBtn"
+                    onClick={() => handleSave(quote)}
+                  >Save</button>
+                )}
               </li>
-            ))}
+            );
+          })}
           </ul>
         )}
       </div>
@@ -488,6 +557,8 @@ function Activity() {
   );
 }
 
+
+
 function SavedQuotes(){
   const [quotes, setQuotes]= useState([]);
   const [isLoading, setIsLoading]= useState(true);
@@ -499,11 +570,14 @@ function SavedQuotes(){
       setError(null);
       try {
         const results = await getSavedQuotes();
+        
         console.log("Quotes from API:", results);
         if (results.length === 0) {
+          setQuotes([]);
           setError("No Quotes Saved Yet.");
         } else {
           setQuotes(results);
+          setError(null);
         }
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
@@ -517,11 +591,15 @@ function SavedQuotes(){
     fetchData();
     }, []);
   
+
+
    const handleRemoveQuote = async (quote) => {
     await removeQuote(quote);
+    
     fetchData(); // Re-fetch the quotes to update the UI
   };
-  
+
+
   return (
     <div className = "saved-quotes-container">
       <div className = "saved-quotes-header">
