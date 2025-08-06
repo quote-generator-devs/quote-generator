@@ -408,6 +408,9 @@ function QuotesFound() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
 
+  const {isAuthenticated} = useAuth();
+
+
 
 
   // useEffect runs when the component mounts or when the 'query' changes
@@ -427,6 +430,7 @@ function QuotesFound() {
         }
 
         //obtain the saved Quotes
+        if(isAuthenticated){
         const savedQuotes= await getSavedQuotes();
         console.log("Saved quotes:", savedQuotes.map(q => q.id)); // Log saved quote IDs
 
@@ -444,7 +448,7 @@ function QuotesFound() {
 
         //save them into savedQuoteIds
         setSavedQuoteIds(savedQuoteMap);
-        
+      }
         
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
