@@ -572,9 +572,11 @@ function SavedQuotes(){
         
         console.log("Quotes from API:", results);
         if (results.length === 0) {
+          setQuotes([]);
           setError("No Quotes Saved Yet.");
         } else {
           setQuotes(results);
+          setError(null);
         }
       } catch (err) {
         setError("Could not fetch quotes. Please try again later.");
