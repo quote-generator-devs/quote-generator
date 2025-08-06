@@ -249,7 +249,7 @@ function AboutUs() {
           <div class="dev">
             <img src="/images/Bhavana.jpg" alt="Image of Bhavana Dakshinamoorthy" class="bhavana"/>
             <p>Bhavana Dakshinamoorthy</p>
-            <a href = "https://www.linkedin.com/in/bhavana-dakshinamoorthy-874a5a307">
+            <a href = "https://www.linkedin.com/in/bhavanadakshinamoorthy/">
               <img src = "/images/Linkedin-Logo.png" alt= "Image of Linkedin Logo" class = "linkedin"/>
             </a>
             <a href = "https://github.com/bhavana-pixel">
