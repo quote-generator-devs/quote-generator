@@ -147,9 +147,12 @@ export async function saveQuote(data){
         })
     });
 
+    //obtain the savedData to send the ID back to App.js
+    const savedData = await response.json();
     if(response.ok)
     {
         console.log("Quote saved.");
+        return savedData;
     }
     else{
         console.log("Failed to save Quote.");

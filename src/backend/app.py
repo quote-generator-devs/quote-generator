@@ -186,9 +186,11 @@ def save_quote():
     if not data or 'quote' not in data or 'author' not in data:
         return jsonify({"error": "Invalid quote data provided"}), 400
 
-    #calls the helper method to save the quote
-    if save_quote_for_user(current_user_id, data):
-        return jsonify({"message": "Quote saved successfully"}), 201
+    saved_quote = save_quote_for_user(current_user_id, data)
+    if saved_quote:
+        #updated to return the entire savedQuote to utils.js -> app.js
+        #by doing so, app.js can use the correct ID to remove the quote
+        return jsonify(saved_quote), 201
     else:
         return jsonify({"error": "Failed to save quote"}), 500
 
@@ -202,12 +204,15 @@ def save_quote_for_user(user_id, quote_dict):
 
         #inserts into the database the saved quotes --> associates it with 
         # the user_id of the current user
-        conn.execute(
+        cursor= conn.execute(
             "INSERT INTO SAVED_QUOTES (USER_ID, QUOTE_JSON) VALUES (?, ?)",
             (user_id, quote_json_string)
         )
         conn.commit()
-        return True
+
+        inserted_id = cursor.lastrowid
+        quote_dict['id']= inserted_id
+        return quote_dict
     except sqlite3.Error as e:
         print(f"Database error saving quote: {e}")
         return False
