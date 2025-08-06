@@ -234,12 +234,13 @@ function AboutUs() {
         <h1>The Creators</h1>
         <div class="devs">
           <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Bhavana Dakshinamoorthy" class="bhavana"/>
+            <img src="/images/Bhavana.jpg" alt="Image of Bhavana Dakshinamoorthy" class="bhavana"/>
             <p>Bhavana Dakshinamoorthy</p>
           </div>
           <div class="dev">
             <img src="/images/Noor.jpg" alt="Image of Noor Diab" class="noor" />
             <p>Noor Diab</p>
+            <p class = "linkedin">Linkedin: </p>
           </div>
           <div class="dev">
             <img src="/images/Danny.jpg" alt="Image of Daniel Lawler"  class="danny"/>
@@ -255,9 +256,9 @@ function AboutUs() {
           </div>
         </div>
       </div>
-      
+    
       <div class="dev_description">
-        <h2>About Us</h2>
+        <h2>Our Mission</h2>
         <p>Sharing quotes and quoting each other has been an amusing and exciting part of our college experience. We created Quotebook to continue our tradition and to share this small, but meaningful part of our lives with the world.</p>
       </div>
     </div>

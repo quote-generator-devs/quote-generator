@@ -281,7 +281,7 @@ input {
     
 }
 
-.dev > .noor, .shane, .danny{
+.dev > .noor, .shane, .danny, .bhavana{
     width: 200px;
     height: 200px;
     object-fit: cover;
@@ -294,6 +294,7 @@ input {
     font-family: "Garamond", "sans-serif";
     font-size: 3.5rem;
     color:grey;
+    margin-bottom: 10px;
 }
 
 .dev_description>p {
@@ -303,6 +304,7 @@ input {
     font-size: 2rem;
     margin: 0 15%;
     color: grey;
+    margin-bottom: 120px;
 }
 
 /* Profile Styling */
