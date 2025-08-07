@@ -92,7 +92,7 @@ function Home() {
 
         <div class="searchbar">
           <form onSubmit={handleSearch}>
-            <input type="text" value={query} 
+            <input type="text" value={query} maxLength="100"
               placeholder="🔍 Input your mood here for a quote!" 
               onChange={(e) => setQuery(e.target.value)}
             />

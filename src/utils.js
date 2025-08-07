@@ -71,7 +71,7 @@ export async function addUser(data) {
             Password: hashedPassword //overwrites the plaintext password
         };
 
-        const response = await fetch('http://localhost:5001/user/db', {
+        const response = await fetch('http://localhost:5001/api/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ export async function addUser(data) {
 }
 
 export async function validateUser(data) {
-    const response = await fetch('http://localhost:5001/user/validate', {
+    const response = await fetch('http://localhost:5001/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
