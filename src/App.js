@@ -572,6 +572,7 @@ function Activity() {
       <div class = "activity-header">
         <h1>Activity</h1>
       </div>
+      <h1 class="socialMediaAnnoucement"> 🚧 Coming Soon With Social Media Update ... 🚧</h1>
       <div class = "friend-requests">
         <button>Friend Requests -{'>'} </button>
       </div>
@@ -691,6 +692,12 @@ function Feed(){
         </div>
       </div>
       */}
+
+      <div class="post-container">
+        <h1 className= "socialMediaAnnoucement">🚧 Coming Soon With Social Media Update ... 🚧</h1>
+      </div>
+
+
     
     </div>
   );
