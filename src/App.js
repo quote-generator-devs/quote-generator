@@ -61,38 +61,50 @@ function Home() {
     navigate(`/search?query=${query}`);
   };
 
+  // Auto-update footer years
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const yearDisplay = startYear === currentYear ? startYear : `${startYear}–${currentYear}`;
+
   return (
-    <div class="main_header">
-      <div class="quotebook_box">
-        <div class="quotebox_text">
-          <h2 class="quotebook_title">Quotebook</h2>
-          <p class="subtitles">your mood. your quote.</p>
+    <div className="home_wrapper">
+      <div class="main_header">
+        <div class="quotebook_box">
+          <div class="quotebox_text">
+            <h2 class="quotebook_title">Quotebook</h2>
+            <p class="subtitles">your mood. your quote.</p>
+          </div>
+
+          <div class="homeBtns">
+            {isAuthenticated && user ? (
+              <>
+                <p className="welcome_msg">Welcome, {user.username}!</p>
+                <button onClick={logout} className="logOutBtn">Log Out</button>
+              </>
+            ) : (
+              <>
+                <NavLink className="loginBtn" to="/login">Login</NavLink>
+                <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+              </>
+            )}
+          </div>
         </div>
 
-        <div class="homeBtns">
-          {isAuthenticated && user ? (
-            <>
-              <p className="welcome_msg">Welcome, {user.username}!</p>
-              <button onClick={logout} className="logOutBtn">Log Out</button>
-            </>
-          ) : (
-            <>
-              <NavLink className="loginBtn" to="/login">Login</NavLink>
-              <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
-            </>
-          )}
+        <div class="searchbar">
+          <form onSubmit={handleSearch}>
+            <input type="text" value={query} 
+              placeholder="🔍 Input your mood here for a quote!" 
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit" className="submitBtn">Search</button>
+          </form>
         </div>
-      </div>
 
-      <div class="searchbar">
-        <form onSubmit={handleSearch}>
-          <input type="text" value={query} 
-            placeholder="🔍 Input your mood here for a quote!" 
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className="submitBtn">Search</button>
-        </form>
+        
       </div>
+      <footer>
+        <p className="trademark">&copy; {yearDisplay} Quotebook <span>&trade;</span></p>
+      </footer>
     </div>
   );
 }
@@ -347,8 +359,12 @@ function Profile(){
 
   // not logged in, redirect to login
   if (!isAuthenticated) {
-    setTimeout(() => navigate('/login'), 2000);
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
+    return (
+    <div className="profile">
+      <h1>Please log in or sign up to access your profile!</h1>
+      <NavLink className="loginBtn" to="/login">Login</NavLink>
+      <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+    </div>);
   }
 
   return (
