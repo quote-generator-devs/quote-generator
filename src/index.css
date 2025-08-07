@@ -338,9 +338,9 @@ input {
     margin-bottom: 120px;
 }
 
-/* Profile Styling */
+/* Profile and Edit Profile Styling */
 
-.profile{
+.profile, .edit-profile-header{
     text-align: center;
     font-family: "Garamond", "sans-serif";
     font-size: 20px;
@@ -384,7 +384,7 @@ input {
 }
 
 
-.publishedQuotesBtn, .savedQuotesBtn, .logOutBtn{
+.publishedQuotesBtn, .savedQuotesBtn, .logOutBtn, .editProfileBtn{
     background-color: cornsilk;
     border-radius: 5px;
     border-color: rgb(235, 195, 227);
@@ -401,7 +401,7 @@ input {
     background-color: rgb(221, 144, 144);
 }
 
-.publishedQuotesBtn:hover, .savedQuotesBtn:hover{
+.publishedQuotesBtn:hover, .savedQuotesBtn:hover, .editProfileBtn:hover{
     background-color:rgb(235, 195, 227);
 }
 

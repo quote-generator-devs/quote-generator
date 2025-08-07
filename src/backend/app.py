@@ -64,6 +64,12 @@ def initialize_db():
             print("profile_pic_url column already exists.")
         else:
             print("Error adding column:", e)
+    
+    try:
+        connect.execute("ALTER TABLE USER ADD COLUMN name TEXT")
+        print("Added name column to USER table.")
+    except sqlite3.OperationalError:
+        pass
 
     #CREATE A SAVED QUOTES TABLE
     connect.execute('''CREATE TABLE IF NOT EXISTS SAVED_QUOTES (
@@ -130,7 +136,7 @@ def login():
 def get_profile():
     current_user_id = get_jwt_identity()
     conn = get_db_connection()
-    user_row = conn.execute('SELECT ID, USERNAME, profile_pic_url FROM user WHERE ID = ?', (current_user_id,)).fetchone()
+    user_row = conn.execute('SELECT ID, USERNAME, profile_pic_url, name FROM user WHERE ID = ?', (current_user_id,)).fetchone()
     conn.close()
 
     if not user_row:
@@ -139,8 +145,32 @@ def get_profile():
     return jsonify(
         id=user_row['ID'],
         username=user_row['USERNAME'],
-        profilePicUrl=user_row['profile_pic_url']  # Add this line
+        profilePicUrl=user_row['profile_pic_url'],
+        name = user_row['name'] 
     )
+
+@app.route('/api/profile/change_name', methods = ['POST'])
+@jwt_required()
+def change_name():
+    current_user_id = get_jwt_identity()
+    print(f"Received token for user: {current_user_id}")
+    data = request.get_json()
+    name = data.get('name')
+
+    if not name:
+        return jsonify({"error": "Input Name"}), 400
+    
+    conn = get_db_connection()
+    try:
+        conn.execute('UPDATE USER SET name = ? WHERE ID = ?', (name, current_user_id))
+        conn.commit()
+        return jsonify({"success": True, "message": "Name changed!"})
+    except sqlite3.Error as e:
+        print("Database error:", e)
+        return jsonify({"error": "Name Change Failure"}), 500
+    finally: 
+        conn.close()
+
 
 @app.route('/api/upload_profile_pic', methods=['POST'])
 @jwt_required()
