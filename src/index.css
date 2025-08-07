@@ -45,7 +45,14 @@ body{
     border-radius:5px;
 }
 
+.home_wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .main_header{
+    flex-grow: 1;
     display:flex;
     flex-direction: row;
 }
@@ -149,6 +156,21 @@ body{
     background-color:cornsilk;
     border:none;
     border-radius: 30px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.trademark {
+    font-size: medium;
+    vertical-align: super;
+}
+
+.trademark > span {
+    font-size: small;
 }
 
 /* Login and Sign Up Page Styling */
@@ -357,6 +379,10 @@ input {
     display: flex;
     justify-content: center;
     margin-top: 3%;
+}
+
+.profile > h1 {
+    margin-bottom: 70px;
 }
 
 .profile > h2{
@@ -753,6 +779,12 @@ input {
     border-color: rgb(240, 175, 227);
     font-size: 70%;
     border-radius: 10%;
+}
+
+.socialMediaAnnoucement{
+    color:orange;
+    font-family: "Garamond", "sans-serif";
+    font-size: 40px;
 }
 
 /* Saved Quotes Page Styling */

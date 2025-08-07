@@ -83,9 +83,9 @@ def initialize_db():
     connect.close()
 
 
-@app.route("/user/db", methods=['POST', 'OPTIONS'])
+@app.route("/api/signup", methods=['POST', 'OPTIONS'])
 
-def receive_data():
+def signup():
     if request.is_json: 
         data=request.json
         print("RECEIVED JSON:", data) 
@@ -107,7 +107,7 @@ def receive_data():
 
     return json.loads('{"success": true}')
     
-@app.route('/user/validate', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 
 def login():
     """Receives login credentials and verifies them against the stored hash."""

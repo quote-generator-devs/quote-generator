@@ -25,6 +25,7 @@ function App() {
           <Route path = "/theme2" exact element = {<Theme2 />} />
           <Route path = "/theme3" exact element = {<Theme3 />} />
           <Route path = "/theme4" exact element = {<Theme4 />} />
+          <Route path = "/published-quotes" exact element = {<PublishedQuotes />} />
         </Routes>
       </HashRouter>
     </AuthProvider>
@@ -44,6 +45,7 @@ function NavBar() {
       <NavLink class="profile" to="/profile">Profile</NavLink>
       <NavLink class="loginBtn" to="/profile"></NavLink>
       <NavLink class="signUpBtn" to="/profile"></NavLink>
+      <NavLink class="publishedQuotesBtn" to="/published-quotes"></NavLink>
       </div>
     </div>
   );
@@ -62,38 +64,50 @@ function Home() {
     navigate(`/search?query=${query}`);
   };
 
+  // Auto-update footer years
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const yearDisplay = startYear === currentYear ? startYear : `${startYear}–${currentYear}`;
+
   return (
-    <div class="main_header">
-      <div class="quotebook_box">
-        <div class="quotebox_text">
-          <h2 class="quotebook_title">Quotebook</h2>
-          <p class="subtitles">your mood. your quote.</p>
+    <div className="home_wrapper">
+      <div class="main_header">
+        <div class="quotebook_box">
+          <div class="quotebox_text">
+            <h2 class="quotebook_title">Quotebook</h2>
+            <p class="subtitles">your mood. your quote.</p>
+          </div>
+
+          <div class="homeBtns">
+            {isAuthenticated && user ? (
+              <>
+                <p className="welcome_msg">Welcome, {user.username}!</p>
+                <button onClick={logout} className="logOutBtn">Log Out</button>
+              </>
+            ) : (
+              <>
+                <NavLink className="loginBtn" to="/login">Login</NavLink>
+                <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+              </>
+            )}
+          </div>
         </div>
 
-        <div class="homeBtns">
-          {isAuthenticated && user ? (
-            <>
-              <p className="welcome_msg">Welcome, {user.username}!</p>
-              <button onClick={logout} className="logOutBtn">Log Out</button>
-            </>
-          ) : (
-            <>
-              <NavLink className="loginBtn" to="/login">Login</NavLink>
-              <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
-            </>
-          )}
+        <div class="searchbar">
+          <form onSubmit={handleSearch}>
+            <input type="text" value={query} maxLength="100"
+              placeholder="🔍 Input your mood here for a quote!" 
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit" className="submitBtn">Search</button>
+          </form>
         </div>
-      </div>
 
-      <div class="searchbar">
-        <form onSubmit={handleSearch}>
-          <input type="text" value={query} 
-            placeholder="🔍 Input your mood here for a quote!" 
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className="submitBtn">Search</button>
-        </form>
+        
       </div>
+      <footer>
+        <p className="trademark">&copy; {yearDisplay} Quotebook <span>&trade;</span></p>
+      </footer>
     </div>
   );
 }
@@ -222,8 +236,10 @@ function SignUp(){
       <div class = "container">
         <form class = "signup_form" method="post" onSubmit={handleSubmit}>
           <h3>Sign Up</h3>
+          {/** 
           <label for = "email"></label>
           <input type = "text" id = "email" name = "Email" placeholder = "Your Email" /> <br />
+          */}
           <label for = "username"></label>
           <input type = "text" id = "username" name = "Username" placeholder = "Create Username" /> <br />
           <label for = "password"></label>
@@ -277,12 +293,7 @@ function AboutUs() {
               <img src = "/images/Github-Logo.png" alt="Image of Github Logo" class = "github"/>
             </a>
           </div>
-          <div class="dev">
-            <img src="https://placehold.co/200" alt="Image of Kaden Spencer" class="kaden"/>
-            <p>Kaden Spencer</p>
-              <img src = "/images/Linkedin-Logo.png" alt= "Image of Linkedin Logo" class = "linkedin"/>         
-              <img src = "/images/Github-Logo.png" alt="Image of Github Logo" class = "github"/>
-          </div>
+          
           <div class="dev">
             <img src="/images/Shane.jpg" alt="Image of Shane Thoma"  class="shane"/>
             <p>Shane Thoma</p>
@@ -348,8 +359,12 @@ function Profile(){
 
   // not logged in, redirect to login
   if (!isAuthenticated) {
-    setTimeout(() => navigate('/login'), 2000);
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
+    return (
+    <div className="profile">
+      <h1>Please log in or sign up to access your profile!</h1>
+      <NavLink className="loginBtn" to="/login">Login</NavLink>
+      <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+    </div>);
   }
 
   return (
@@ -389,7 +404,7 @@ function Profile(){
         <p class = "profile-element"><b>Bio:</b> {user.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
         <div class= "profilePgBtns">
-          <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
+          <NavLink className="publishedQuotesBtn" to="/published-quotes">Published Quotes</NavLink>
           <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
           <NavLink className="logOutBtn" to = "/login" onClick = {logout}>Log Out</NavLink>
           <NavLink className = "editProfileBtn" to = "/edit-profile">Edit Profile</NavLink>
@@ -475,9 +490,10 @@ function QuotesFound() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query');
 
-  const {isAuthenticated} = useAuth();
+  //const {isAuthenticated} = useAuth();
 
-
+  const {user, token, updateUserData, isAuthenticated, logout} = useAuth();
+  const navigate = useNavigate();
 
 
   // useEffect runs when the component mounts or when the 'query' changes
@@ -529,70 +545,70 @@ function QuotesFound() {
   }, [query]); // The effect re-runs if the 'query' in the URL changes
   
 
-
-
-
   const handleSave = async (quote) => {
-  try {
-    console.log("Attempting to save:", quote);
+    try {
 
+      if(!isAuthenticated)
+      {
+        setTimeout(() => navigate('/login'), 1000);
+        return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your profile.</p></div>;
+      }
+      console.log("Attempting to save:", quote);
 
-    const savedQuote = await saveQuote({content: quote.content, author: {name: quote.author.name}});
+      const savedQuote = await saveQuote({content: quote.content, author: {name: quote.author.name}});
     
-    console.log("Saved quote object:", savedQuote);
+      console.log("Saved quote object:", savedQuote);
+
+      //by returning the savedQuote object, we should also return its ID
+      if(savedQuote && savedQuote.id)
+      {
+        //update the map with the savedQuote object
+        //this is how the map will look like:
+        //"quote content here|||Author Name": { id: 43, content: "...", author: { name: "..." }, ... },
+        setSavedQuoteIds(prevMap => {
+          const newMap = new Map(prevMap);
+          const key = normalizeKey(quote);
+
+          //update with the new savedQuote object
+          newMap.set(key, savedQuote);
+          return newMap;
+        });
+
+      }
+
+    } catch (err) {
+      console.error("Failed to save quote:", err);
+    }
+  };
 
 
-    //by returning the savedQuote object, we should also return its ID
-    if(savedQuote && savedQuote.id)
-    {
 
-      //update the map with the savedQuote object
-      //this is how the map will look like:
-      //"quote content here|||Author Name": { id: 43, content: "...", author: { name: "..." }, ... },
+  const handleRemove = async (quote) => {
+    try {
+
+      await removeQuote(quote);
+      console.log(quote.id)
+    
       setSavedQuoteIds(prevMap => {
         const newMap = new Map(prevMap);
-        const key = normalizeKey(quote);
 
-        //update with the new savedQuote object
-        newMap.set(key, savedQuote);
+        // Normalize for both possible structures
+        const key = normalizeKey(quote);;
+        newMap.delete(key);
         return newMap;
       });
 
+
+    } catch (err) {
+      console.error("Failed to remove quote:", err);
     }
+  };
 
-  } catch (err) {
-    console.error("Failed to save quote:", err);
-  }
-};
-
-
-
-const handleRemove = async (quote) => {
-  try {
-
-    await removeQuote(quote);
-    console.log(quote.id)
-    
-    setSavedQuoteIds(prevMap => {
-      const newMap = new Map(prevMap);
-
-      // Normalize for both possible structures
-      const key = normalizeKey(quote);;
-      newMap.delete(key);
-      return newMap;
-    });
-
-
-  } catch (err) {
-    console.error("Failed to remove quote:", err);
-  }
-};
-
-const normalizeKey = (quote) => {
-  const content = (quote.content || quote.quote || '').trim();
-  const author = (quote.author?.name || quote.author || '').trim();
-  return `${content}|||${author}`;
-};
+  const normalizeKey = (quote) => {
+    const content = (quote.content || quote.quote || '').trim();
+    const author = (quote.author?.name || quote.author || '').trim();
+    return `${content}|||${author}`;
+  };
 
 
 
@@ -641,6 +657,7 @@ function Activity() {
       <div class = "activity-header">
         <h1>Activity</h1>
       </div>
+      <h1 class="socialMediaAnnoucement"> 🚧 Coming Soon With Social Media Update ... 🚧</h1>
       <div class = "friend-requests">
         <button>Friend Requests -{'>'} </button>
       </div>
@@ -659,6 +676,10 @@ function SavedQuotes(){
   const [quotes, setQuotes]= useState([]);
   const [isLoading, setIsLoading]= useState(true);
   const [error, setError]= useState(null);
+
+  //preparing to make sure the user is logged in
+  const {user, token, updateUserData, isAuthenticated, logout} = useAuth();
+  const navigate = useNavigate();
 
 
   const fetchData = async () => {
@@ -683,7 +704,7 @@ function SavedQuotes(){
       }
     };
 
-  useEffect(() => {
+    useEffect(() => {
     fetchData();
     }, []);
   
@@ -695,6 +716,12 @@ function SavedQuotes(){
     fetchData(); // Re-fetch the quotes to update the UI
   };
 
+   if(!isAuthenticated)
+  {
+    setTimeout(() => navigate('/login'), 2000);
+    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your saved Quotes.</p></div>;
+  }
+  
 
   return (
     <div className = "saved-quotes-container">
@@ -750,10 +777,24 @@ function Feed(){
         </div>
       </div>
       */}
+
+      <div class="post-container">
+        <h1 className= "socialMediaAnnoucement">🚧 Coming Soon With Social Media Update ... 🚧</h1>
+      </div>
+
+
     
     </div>
   );
 }
+
+function PublishedQuotes(){
+  return(
+    <div class="publishedQuotes-container">
+      <h1 className= "socialMediaAnnoucement">🚧 Coming Soon With Social Media Update ... 🚧</h1>
+    </div>
+  );
+};
 
 function Theme1(){
   
