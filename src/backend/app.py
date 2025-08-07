@@ -71,6 +71,12 @@ def initialize_db():
     except sqlite3.OperationalError:
         pass
 
+    try:
+        connect.execute("ALTER TABLE USER ADD COLUMN bio TEXT")
+        print("Added bio column to USER table.")
+    except sqlite3.OperationalError:
+        pass
+
     #CREATE A SAVED QUOTES TABLE
     connect.execute('''CREATE TABLE IF NOT EXISTS SAVED_QUOTES (
                     ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -136,7 +142,7 @@ def login():
 def get_profile():
     current_user_id = get_jwt_identity()
     conn = get_db_connection()
-    user_row = conn.execute('SELECT ID, USERNAME, profile_pic_url, name FROM user WHERE ID = ?', (current_user_id,)).fetchone()
+    user_row = conn.execute('SELECT ID, USERNAME, profile_pic_url, name, bio FROM user WHERE ID = ?', (current_user_id,)).fetchone()
     conn.close()
 
     if not user_row:
@@ -146,29 +152,38 @@ def get_profile():
         id=user_row['ID'],
         username=user_row['USERNAME'],
         profilePicUrl=user_row['profile_pic_url'],
-        name = user_row['name'] 
+        name = user_row['name'],
+        bio = user_row['bio']
     )
 
-@app.route('/api/profile/change_name', methods = ['POST'])
+@app.route('/api/profile/update', methods=['POST'])
 @jwt_required()
-def change_name():
+def update_profile():
     current_user_id = get_jwt_identity()
-    print(f"Received token for user: {current_user_id}")
     data = request.get_json()
-    name = data.get('name')
-
-    if not name:
-        return jsonify({"error": "Input Name"}), 400
     
+    name = data.get('name')
+    bio = data.get('bio')
+
+    # If no name is given.
+    if name is not None and not name.strip():
+        return jsonify({"error": "Name cannot be empty"}), 400
+    #If bio is too long.
+    if bio is not None and len(bio) > 500:
+        return jsonify({"error": "Bio must be under 500 characters"}), 400
+
     conn = get_db_connection()
     try:
-        conn.execute('UPDATE USER SET name = ? WHERE ID = ?', (name, current_user_id))
+        conn.execute(
+            "UPDATE USER SET name = ?, bio = ? WHERE ID = ?",
+            (name, bio, current_user_id)
+        )
         conn.commit()
-        return jsonify({"success": True, "message": "Name changed!"})
+        return jsonify({"success": True, "message": "Profile updated!"})
     except sqlite3.Error as e:
         print("Database error:", e)
-        return jsonify({"error": "Name Change Failure"}), 500
-    finally: 
+        return jsonify({"error": "Profile update failed"}), 500
+    finally:
         conn.close()
 
 

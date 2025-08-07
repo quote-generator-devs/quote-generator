@@ -206,12 +206,16 @@ input {
 }
 
 .login-button, .signup-button{
-     background-color: pink;
-    border-radius: 10;
-    border-color: rgb(235, 195, 227);
+  margin-top: 25px;
+  padding: 12px 10px;
+  background-color:  #0095f6;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
 }
-
-
 
 /* Quote Search Results Styling */
 
@@ -844,4 +848,55 @@ code {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15)
+}
+
+/* Edit Profile Styling */
+
+.edit-profile-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    font-size: 100%;
+}
+
+.edit-profile{
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background-color: cornsilk;
+    border-radius: 10px;
+    margin: auto;
+    text-align: center;
+    border: solid white;
+    color: rgb(111, 111, 111);
+    font-size: 110%;
+}
+
+.edit-profile label{
+    display: block;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.edit-profile input, .edit-profile textarea{
+    width: 70%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    font-size: 82%;
+}
+
+.edit-profile button {
+  margin-top: 25px;
+  padding: 12px 10px;
+  background-color:  #0095f6;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
 }
