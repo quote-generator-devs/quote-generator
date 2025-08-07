@@ -781,6 +781,12 @@ input {
     border-radius: 10%;
 }
 
+.socialMediaAnnoucement{
+    color:orange;
+    font-family: "Garamond", "sans-serif";
+    font-size: 40px;
+}
+
 /* Saved Quotes Page Styling */
 
 .saved-quotes-container{
