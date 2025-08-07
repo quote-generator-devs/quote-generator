@@ -24,6 +24,7 @@ function App() {
           <Route path = "/theme2" exact element = {<Theme2 />} />
           <Route path = "/theme3" exact element = {<Theme3 />} />
           <Route path = "/theme4" exact element = {<Theme4 />} />
+          <Route path = "/published-quotes" exact element = {<PublishedQuotes />} />
         </Routes>
       </HashRouter>
     </AuthProvider>
@@ -43,6 +44,7 @@ function NavBar() {
       <NavLink class="profile" to="/profile">Profile</NavLink>
       <NavLink class="loginBtn" to="/profile"></NavLink>
       <NavLink class="signUpBtn" to="/profile"></NavLink>
+      <NavLink class="publishedQuotesBtn" to="/published-quotes"></NavLink>
       </div>
     </div>
   );
@@ -401,7 +403,7 @@ function Profile(){
         <p class = "profile-element"><b>Bio:</b> {user.bio || 'No bio yet.'}</p>
         <p class = "profile-element"># of Friends</p>
         <div class= "profilePgBtns">
-          <NavLink className="publishedQuotesBtn" to="/publishedQuotes">Published Quotes</NavLink>
+          <NavLink className="publishedQuotesBtn" to="/published-quotes">Published Quotes</NavLink>
           <NavLink className="savedQuotesBtn" to="/saved-quotes">Saved Quotes</NavLink>
           <NavLink className="logOutBtn" to = "/login" onClick = {logout}>Log Out</NavLink>
         </div>
@@ -718,6 +720,14 @@ function Feed(){
     </div>
   );
 }
+
+function PublishedQuotes(){
+  return(
+    <div class="publishedQuotes-container">
+      <h1 className= "socialMediaAnnoucement">🚧 Coming Soon With Social Media Update ... 🚧</h1>
+    </div>
+  );
+};
 
 function Theme1(){
   
