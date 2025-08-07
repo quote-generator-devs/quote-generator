@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 
 function EditProfile(){
-  const {user, token, updateName} = useAuth();
+  const {user, token, updateUserData} = useAuth();
 
   const[name, setName] = useState(user?.name || '');
   const [error, setError] = useState(null);
@@ -19,7 +19,6 @@ function EditProfile(){
     }
 
     try{
-      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5001/api/profile/change_name', {
         method:'POST',
         headers: {
@@ -32,12 +31,11 @@ function EditProfile(){
     const data = await response.json();
 
     if (!response.ok){
-      const data = await response.json();
       throw new Error(data.error || "Failed to change name");
     }
 
     setSuccess(data.message || "Name changed!");
-    updateName({ name });
+    updateUserData({ name });
 
     } catch(err){
       console.error("Error submitting name change", err);
@@ -54,6 +52,7 @@ function EditProfile(){
         <input
           type = "text"
           id = "name"
+          value = {name}
           onChange= {(e) => setName(e.target.value)}
           placeholder = "Enter your name"
         />
