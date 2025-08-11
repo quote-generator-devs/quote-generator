@@ -167,6 +167,7 @@ footer {
 .trademark {
     font-size: medium;
     vertical-align: super;
+    color: rgb(96, 95, 95);
 }
 
 .trademark > span {
