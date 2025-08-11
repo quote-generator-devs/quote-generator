@@ -26,9 +26,27 @@ function SignUp(){
     // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
 
+    // Retrieve username from sign-up form.
+    const username = formJson.Username?.trim();
+
     // Retrieve passwords from sign-up form.
-    const pass = formJson.Password;
-    const reenteredPass = formJson["Re-enter"];
+    const pass = formJson.Password.trim();
+    const reenteredPass = formJson["Re-enter"].trim();
+
+    //Regex to check for username validity.
+    const letterNumberRegex = /^[a-zA-Z0-9._-]$/;
+
+    // Disallow sign up if any fields are empty.
+    if (!username || !pass || !reenteredPass){
+      setError("All fields are required.")
+      return;
+    }
+
+    // Disallow sign p if username does not follow regex rules.
+    if (!letterNumberRegex.test(username)){
+      setError("Username must ONLY have letters, numbers, periods, underscores, or hyphens.")
+      return;
+    }
 
     //Checks if passwords are equal before sign up.
     if (pass !== reenteredPass){
