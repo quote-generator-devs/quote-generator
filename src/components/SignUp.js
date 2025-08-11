@@ -34,7 +34,7 @@ function SignUp(){
     const reenteredPass = formJson["Re-enter"].trim();
 
     //Regex to check for username validity.
-    const letterNumberRegex = /^[a-zA-Z0-9._-]$/;
+    const letterNumberRegex = /^[a-zA-Z0-9._-]+$/;
 
     // Disallow sign up if any fields are empty.
     if (!username || !pass || !reenteredPass){
