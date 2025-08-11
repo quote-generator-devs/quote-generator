@@ -1,11 +1,13 @@
 import { useNavigate, NavLink } from "react-router-dom";
 import { addUser, validateUser } from "../utils";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 function SignUp(){
   const [error,setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   async function handleSubmit(e) {
     // Prevent the browser from reloading the page
@@ -42,12 +44,13 @@ function SignUp(){
       form.reset();
 
       //If signup is successful, automatically login the user.
-      const login = await validateUser({
+      const loginResult = await validateUser({
         Username: formJson.Username,
         Password: formJson.Password,
       });
   
-      if (login.status === "login"){
+      if (loginResult.status === "login") {
+        await login(loginResult.access_token, loginResult.user); //Calls login function and passes in token and username.
         navigate('/profile');
       }
 
