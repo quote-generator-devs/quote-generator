@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getSavedQuotes, removeQuote } from "../utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 function SavedQuotes(){
   const [quotes, setQuotes]= useState([]);
@@ -47,10 +47,13 @@ function SavedQuotes(){
     fetchData(); // Re-fetch the quotes to update the UI
   };
 
-   if(!isAuthenticated)
-  {
-    setTimeout(() => navigate('/login'), 2000);
-    return <div className="profile" style={{ color: 'red' }}><h1>Error</h1><p>No authorization token found. Please log in to view your saved Quotes.</p></div>;
+   if (!isAuthenticated) {
+    return (
+    <div className="profile">
+      <h1>Please log in or sign up to access your Saved Quotes!</h1>
+      <NavLink className="loginBtn" to="/login">Login</NavLink>
+      <NavLink className="signUpBtn" to = "/signup">Sign Up</NavLink>
+    </div>);
   }
   
 
