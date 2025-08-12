@@ -5,3 +5,5 @@ current mood and receive a quote to either enhance their mood or motivate
 them. 
 In addition, we are hoping to integrate this as a social media service 
 in which users can react to their friends' quotes and post their own.
+
+Check out a detailed product description [here](https://github.com/quote-generator-devs)!
